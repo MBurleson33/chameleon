@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0d241b">
+<title>Chameleon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d241b; --bg2:#123326; --card:#173f2f; --line:#24563f;
+  --text:#eef7ea; --muted:#9dbcaa; --lime:#b8f26b; --lime-d:#86c63f;
+  --cham:#ff7a59; --cham2:#ffb347; --danger:#ff6b6b;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,system-ui,sans-serif;min-height:100%}
+body{padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
+  background:radial-gradient(circle at 20% -10%,#1d4a37 0,transparent 55%),radial-gradient(circle at 110% 110%,#2a3d17 0,transparent 50%),var(--bg);
+  background-attachment:fixed}
+.wrap{max-width:460px;margin:0 auto}
+h1,h2,.display{font-family:"Baloo 2",Nunito,sans-serif;margin:0;line-height:1.05}
+h1{font-size:42px;font-weight:800;letter-spacing:-.5px}
+h1 span{color:var(--lime)}
+.sub{color:var(--muted);margin:6px 0 22px;font-size:15px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+label.lbl{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.row{display:flex;gap:10px;align-items:center}
+.field{margin-bottom:16px}.field:last-child{margin-bottom:0}
+input[type=text],select{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px;font:inherit;font-size:17px;outline:none;appearance:none}
+input[type=text]:focus,select:focus{border-color:var(--lime)}
+#code{font-family:"Baloo 2";font-size:30px;letter-spacing:.3em;text-transform:uppercase;text-align:center;padding:8px 14px}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+.stepper{display:flex;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stepper button{width:52px;height:52px;border:0;background:transparent;color:var(--lime);font-size:26px;font-weight:800;cursor:pointer}
+.stepper button:active{background:var(--line)}
+.stepper output{flex:1;text-align:center;font-family:"Baloo 2";font-size:26px;font-weight:800}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font:inherit;font-weight:800;font-size:17px;cursor:pointer;transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--lime);color:#12301f;box-shadow:0 6px 0 var(--lime-d)}
+.btn-primary:active{box-shadow:0 2px 0 var(--lime-d);transform:translateY(4px)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn-cham{background:var(--cham);color:#2b0f06;box-shadow:0 6px 0 #c4512f}
+.btn-small{width:auto;padding:10px 14px;font-size:14px;border-radius:12px}
+.hint{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.4}
+.how{font-size:14px;color:var(--muted);line-height:1.5}
+.how b{color:var(--text)}
+
+/* Game */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.room{font-family:"Baloo 2";font-size:22px;font-weight:800}
+.room small{display:block;font-family:Nunito;font-size:13px;color:var(--muted);font-weight:700}
+.sync{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--muted)}
+.sync strong{color:var(--text);font-size:15px}
+.dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+
+.role{position:relative;min-height:300px;border-radius:24px;border:2px solid var(--line);background:repeating-linear-gradient(135deg,#173f2f 0 14px,#1a4433 14px 28px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;cursor:pointer;margin-bottom:14px;overflow:hidden}
+.role .cover .big{font-size:64px;line-height:1}
+.role .cover .display{font-size:26px;margin-top:10px}
+.role .cover p{color:var(--muted);margin:6px 0 0;font-size:14px}
+.role .face{display:none;width:100%}
+.role.show{background:var(--bg2);border-color:var(--lime)}
+.role.show.isCham{border-color:var(--cham);background:linear-gradient(160deg,#3a1d14,#22140f)}
+.role.show .cover{display:none}.role.show .face{display:block}
+.cat{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.secret{font-family:"Baloo 2";font-size:44px;font-weight:800;color:var(--lime);margin:2px 0 12px;line-height:1}
+.chamTitle{font-family:"Baloo 2";font-size:34px;font-weight:800;color:var(--cham);margin:2px 0 4px;line-height:1}
+.chamSub{color:#ffcdb9;font-size:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.grid div{background:rgba(255,255,255,.06);border-radius:8px;padding:7px 3px;font-size:11.5px;font-weight:700;line-height:1.15;min-height:38px;display:flex;align-items:center;justify-content:center}
+.grid div.hit{background:var(--lime);color:#12301f}
+
+.first{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.first .num{width:52px;height:52px;border-radius:16px;background:var(--lime);color:#12301f;display:flex;align-items:center;justify-content:center;font-family:"Baloo 2";font-size:28px;font-weight:800;flex:none}
+.first div:last-child{font-size:15px;line-height:1.3}
+.first small{color:var(--muted);display:block}
+
+.timer{text-align:center}
+.clock{position:relative;width:190px;height:190px;margin:4px auto 14px}
+.clock svg{transform:rotate(-90deg)}
+.clock .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.clock .t b{font-family:"Baloo 2";font-size:48px;font-weight:800;line-height:1}
+.clock .t span{font-size:13px;color:var(--muted);margin-top:4px}
+.timer.done .clock .t b{color:var(--cham)}
+.timer.warn .clock .t b{color:var(--cham2)}
+.actions{display:grid;gap:12px;margin-top:4px}
+
+/* Dialog */
+.scrim{position:fixed;inset:0;background:rgba(3,12,8,.72);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:10}
+.scrim.open{display:flex;animation:fade .15s}
+.dialog{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;animation:up .2s ease-out}
+.dialog h2{font-size:26px;margin-bottom:6px}
+.dialog p{color:var(--muted);margin:0 0 18px;line-height:1.45}
+.dialog .btns{display:grid;gap:10px}
+.revealBig{text-align:center;padding:6px 0 16px}
+.revealBig .display{font-size:52px;color:var(--cham);font-weight:800}
+.revealBig .w{font-family:"Baloo 2";font-size:30px;color:var(--lime);font-weight:800}
+@keyframes up{from{transform:translateY(30px);opacity:0}}
+@keyframes fade{from{opacity:0}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SETUP -->
+  <section id="setup">
+    <h1>🦎 <span>Chameleon</span></h1>
+    <p class="sub">One phone each. Everyone gets the secret word except the Chameleon.</p>
+
+    <div class="panel">
+      <div class="field">
+        <label class="lbl" for="code">Room code</label>
+        <div class="row">
+          <input id="code" type="text" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD">
+          <button class="btn btn-ghost btn-small" id="newCode" style="flex:none">New</button>
+        </div>
+        <div class="hint">One person taps New and reads the code out. Everyone else types it in.</div>
+      </div>
+      <div class="two field">
+        <div>
+          <label class="lbl">Players</label>
+          <div class="stepper"><button data-step="players" data-d="-1">−</button><output id="players">5</output><button data-step="players" data-d="1">+</button></div>
+        </div>
+        <div>
+          <label class="lbl">I'm player #</label>
+          <div class="stepper"><button data-step="seat" data-d="-1">−</button><output id="seat">1</output><button data-step="seat" data-d="1">+</button></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="cat">Category</label>
+        <select id="cat"></select>
+      </div>
+      <div class="field">
+        <label class="lbl" for="timer">Round timer</label>
+        <select id="timer">
+          <option value="60">1 minute</option>
+          <option value="90">1½ minutes</option>
+          <option value="120" selected>2 minutes</option>
+          <option value="180">3 minutes</option>
+          <option value="300">5 minutes</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="join">Join game</button>
+
+    <div class="panel how" style="margin-top:22px">
+      <b>How it works.</b> Number yourselves around the circle (1, 2, 3…), clockwise. Everyone sets the same room code, player count and category, and their own player number. Each round, everyone else gets the same secret word; the Chameleon only sees the category. Go round giving a one-word clue, then discuss and point at the Chameleon on three. If they're caught, they get one guess at the word to steal the win.
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="hidden">
+    <div class="top">
+      <div class="room" id="roomLbl">ABCD<small>Round 1</small></div>
+      <button class="btn btn-ghost btn-small" id="leave">Leave</button>
+    </div>
+
+    <div class="sync"><div class="dot" id="syncDot"></div><div>Sync check: <strong id="syncName">Teal Gecko</strong><br>Every phone should show this.</div></div>
+
+    <div class="role" id="role">
+      <div class="cover">
+        <div class="big">👆</div>
+        <div class="display">Press &amp; hold</div>
+        <p>to see your role. Hide your screen!</p>
+        <p id="youAre" style="margin-top:14px;color:var(--text);font-weight:800"></p>
+      </div>
+      <div class="face" id="face"></div>
+    </div>
+
+    <div class="panel first">
+      <div class="num" id="firstNum">3</div>
+      <div><b>Player <span id="firstNum2">3</span> gives the first clue</b><small>then go clockwise, one word each</small></div>
+    </div>
+
+    <div class="panel timer" id="timerBox">
+      <div class="clock">
+        <svg width="190" height="190" viewBox="0 0 190 190">
+          <circle cx="95" cy="95" r="84" fill="none" stroke="#24563f" stroke-width="12"/>
+          <circle id="ring" cx="95" cy="95" r="84" fill="none" stroke="#b8f26b" stroke-width="12" stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="0"/>
+        </svg>
+        <div class="t"><b id="timeTxt">2:00</b><span id="timeSub">Ready</span></div>
+      </div>
+      <button class="btn btn-primary" id="timerBtn">Start synced timer</button>
+      <div class="hint">Tap together when someone says "go". Phones start on the same 5-second mark.</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-cham" id="revealBtn">Reveal the Chameleon</button>
+      <button class="btn btn-ghost" id="nextBtn">Next round →</button>
+    </div>
+  </section>
+</div>
+
+<!-- Custom dialog -->
+<div class="scrim" id="scrim"><div class="dialog" id="dialog"></div></div>
+
+<script>
+(() => {
+"use strict";
+const CATS = {
+  "Food":["Pizza","Tacos","Sushi","Burger","Pancakes","Spaghetti","Salad","Ice Cream","Popcorn","Hot Dog","Burrito","Fried Chicken","Donut","Soup","Steak","Cupcake"],
+  "Animals":["Lion","Penguin","Giraffe","Shark","Elephant","Kangaroo","Owl","Snake","Dolphin","Horse","Monkey","Bear","Frog","Eagle","Turtle","Zebra"],
+  "Places":["Beach","Hospital","Library","Airport","Zoo","Church","Movie Theater","Gym","Farm","Museum","Mall","School","Restaurant","Fire Station","Campground","Bowling Alley"],
+  "Jobs":["Teacher","Doctor","Firefighter","Chef","Pilot","Farmer","Police Officer","Dentist","Mechanic","Lawyer","Plumber","Nurse","Artist","Mail Carrier","Barber","Astronaut"],
+  "Sports":["Football","Basketball","Baseball","Soccer","Tennis","Golf","Hockey","Bowling","Swimming","Volleyball","Boxing","Skiing","Wrestling","Track","Pickleball","Surfing"],
+  "Bible Characters":["Moses","David","Noah","Abraham","Peter","Paul","Mary","Jonah","Daniel","Esther","Joseph","Ruth","Samson","Elijah","Goliath","John the Baptist"],
+  "Around the House":["Toaster","Couch","Lamp","Fridge","Vacuum","Toothbrush","Pillow","Microwave","Clock","Mirror","Blender","Bathtub","Remote","Broom","Washer","Doorbell"],
+  "Celebrations":["Christmas","Easter","Thanksgiving","Halloween","July 4th","Valentine's","New Year's Eve","Birthday","St. Patrick's","Mother's Day","Father's Day","Wedding","Baby Shower","Graduation","Super Bowl","Family Reunion"],
+  "Getting Around":["Car","Bicycle","Train","Airplane","Boat","Helicopter","Skateboard","Bus","Motorcycle","Scooter","Tractor","Submarine","Hot Air Balloon","Taxi","Rocket","Canoe"],
+  "Instruments":["Guitar","Piano","Drums","Violin","Trumpet","Flute","Saxophone","Harmonica","Banjo","Cello","Tambourine","Harp","Ukulele","Accordion","Xylophone","Trombone"],
+  "Nature":["Rainbow","Tornado","Volcano","Snow","Thunder","Desert","Waterfall","Forest","Mountain","Lightning","Fog","Ocean","Cave","Glacier","Sunset","Earthquake"],
+  "Toys & Games":["Yo-yo","Kite","Teddy Bear","Jump Rope","Puzzle","Doll","Blocks","Bubbles","Slinky","Frisbee","Marbles","Rubik's Cube","Play-Doh","Board Game","Water Gun","Video Game"]
+};
+const CAT_KEYS = Object.keys(CATS);
+const COLORS = [["Red","#ff5d5d"],["Orange","#ff9a3c"],["Gold","#ffd23f"],["Lime","#b8f26b"],["Teal","#2ec4b6"],["Sky","#5bc0eb"],["Blue","#4f7cff"],["Purple","#9b5de5"],["Pink","#f15bb5"],["Brown","#a47148"],["Silver","#cfd8dc"],["Mint","#7ae7c7"]];
+const CRITTERS = ["Gecko","Iguana","Frog","Toad","Newt","Turtle","Python","Tortoise","Salamander","Axolotl","Anole","Skink","Cobra","Viper","Dragon","Monitor"];
+
+// ---------- seeded randomness (same input -> same output on every phone)
+function hashStr(str){ let h=1779033703^str.length;
+  for(let i=0;i<str.length;i++){ h=Math.imul(h^str.charCodeAt(i),3432918353); h=h<<13|h>>>19; }
+  h=Math.imul(h^h>>>16,2246822507); h=Math.imul(h^h>>>13,3266489909); return (h^h>>>16)>>>0; }
+function rng(seedStr){ let a=hashStr(seedStr);
+  return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function shuffle(arr,r){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function roundData(s){
+  // Deck of (category, word) pairs, shuffled once per room so words don't repeat until the deck runs out.
+  const keys = s.cat==="__random" ? CAT_KEYS : [s.cat];
+  let deck=[]; keys.forEach(k=>CATS[k].forEach((w,i)=>deck.push([k,i])));
+  deck = shuffle(deck, rng(`deck|${s.code}|${s.cat}`));
+  const [catKey, wi] = deck[(s.round-1) % deck.length];
+  const r = rng(`round|${s.code}|${s.players}|${s.cat}|${s.round}`);
+  const cham = 1 + Math.floor(r()*s.players);
+  const first = 1 + Math.floor(r()*s.players);
+  const sr = rng(`sync|${s.code}|${s.players}|${s.cat}|${s.round}`);
+  const color = COLORS[Math.floor(sr()*COLORS.length)], critter = CRITTERS[Math.floor(sr()*CRITTERS.length)];
+  return {catKey, words:CATS[catKey], wi, word:CATS[catKey][wi], cham, first, syncName:`${color[0]} ${critter}`, syncColor:color[1]};
+}
+
+// ---------- state
+const $ = id => document.getElementById(id);
+const store = { get(){ try{ return JSON.parse(localStorage.getItem("chameleon-v1")||"null"); }catch(e){ return null; } },
+                set(v){ try{ localStorage.setItem("chameleon-v1",JSON.stringify(v)); }catch(e){} } };
+let S = Object.assign({code:"",players:5,seat:1,cat:"__random",timer:120,round:1,tStart:0,tEnd:0,inGame:false}, store.get()||{});
+const save = () => store.set(S);
+
+// ---------- setup screen
+const catSel=$("cat");
+catSel.innerHTML = `<option value="__random">🎲 Mix of everything</option>` + CAT_KEYS.map(k=>`<option value="${k}">${k}</option>`).join("");
+function newCode(){ const L="ABCDEFGHJKLMNPQRSTUVWXYZ"; let c=""; for(let i=0;i<4;i++) c+=L[Math.floor(Math.random()*L.length)]; return c; }
+function paintSetup(){ $("code").value=S.code; $("players").textContent=S.players; $("seat").textContent=S.seat; catSel.value=S.cat; $("timer").value=String(S.timer); }
+document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{
+  const d=+b.dataset.d;
+  if(b.dataset.step==="players"){ S.players=Math.min(12,Math.max(3,S.players+d)); if(S.seat>S.players) S.seat=S.players; }
+  else S.seat=Math.min(S.players,Math.max(1,S.seat+d));
+  paintSetup(); save();
+}));
+$("newCode").onclick=()=>{ S.code=newCode(); paintSetup(); save(); };
+$("code").addEventListener("input",e=>{ e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,""); S.code=e.target.value; save(); });
+catSel.onchange=()=>{ S.cat=catSel.value; save(); };
+$("timer").onchange=()=>{ S.timer=+$("timer").value; save(); };
+$("join").onclick=()=>{
+  if(S.code.length<3){ dialog({title:"Room code needed",text:"Tap New to make a code, or type the one someone else read out.",buttons:[{label:"OK",cls:"btn-primary"}]}); return; }
+  S.inGame=true; S.round=1; S.tStart=S.tEnd=0; save(); enterGame();
+};
+
+// ---------- game screen
+let RD=null;
+function enterGame(){
+  $("setup").classList.add("hidden"); $("game").classList.remove("hidden");
+  RD = roundData(S);
+  $("roomLbl").innerHTML = `${S.code}<small>Round ${S.round} · ${S.players} players · You're #${S.seat}</small>`;
+  $("syncName").textContent = RD.syncName; $("syncDot").style.background = RD.syncColor;
+  $("youAre").textContent = `You're player ${S.seat}`;
+  $("firstNum").textContent = $("firstNum2").textContent = RD.first;
+  const isCham = RD.cham===S.seat;
+  $("role").classList.toggle("isCham",isCham);
+  const grid = `<div class="grid">${RD.words.map((w,i)=>`<div class="${!isCham&&i===RD.wi?'hit':''}">${w}</div>`).join("")}</div>`;
+  $("face").innerHTML = isCham
+    ? `<div class="cat">Category · ${RD.catKey}</div><div class="chamTitle">🦎 You're the Chameleon</div><div class="chamSub">You don't know the word. Blend in with a clue that sounds right.</div>${grid}`
+    : `<div class="cat">Category · ${RD.catKey}</div><div class="secret">${RD.word}</div>${grid}`;
+  window.scrollTo(0,0); tick(); keepAwake();
+}
+function leaveGame(){ S.inGame=false; save(); $("game").classList.add("hidden"); $("setup").classList.remove("hidden"); paintSetup(); }
+
+// hold-to-reveal
+const role=$("role");
+const show=e=>{ e.preventDefault(); role.classList.add("show"); };
+const hide=()=>role.classList.remove("show");
+role.addEventListener("pointerdown",show);
+["pointerup","pointercancel","pointerleave"].forEach(ev=>role.addEventListener(ev,hide));
+role.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("visibilitychange",hide);
+
+// ---------- synced timer (phone clocks are network-synced; we start on the next 5-second boundary)
+let audio=null, lastShown="";
+function beep(times=3){ try{ audio = audio || new (window.AudioContext||window.webkitAudioContext)();
+  for(let i=0;i<times;i++){ const o=audio.createOscillator(), g=audio.createGain(), t=audio.currentTime+i*0.35;
+    o.frequency.value=880; o.connect(g); g.connect(audio.destination);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.4,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.28);
+    o.start(t); o.stop(t+0.3); } }catch(e){} }
+const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+const CIRC = 527.8;
+function tick(){
+  const box=$("timerBox"), now=Date.now();
+  let txt, sub, frac, state;
+  if(!S.tStart){ txt=fmt(S.timer); sub="Ready"; frac=1; state="idle"; }
+  else if(now<S.tStart){ const s=Math.ceil((S.tStart-now)/1000); txt=String(s); sub="Get ready…"; frac=1; state="wait"; }
+  else if(now<S.tEnd){ const left=Math.ceil((S.tEnd-now)/1000); txt=fmt(left); sub="Clues & discussion"; frac=(S.tEnd-now)/(S.tEnd-S.tStart); state=left<=10?"warn":"run"; }
+  else { txt="0:00"; sub="Time's up — vote!"; frac=0; state="done"; }
+  $("timeTxt").textContent=txt; $("timeSub").textContent=sub;
+  $("ring").style.strokeDashoffset = CIRC*(1-frac);
+  $("ring").style.stroke = state==="warn"||state==="done" ? "#ff7a59" : "#b8f26b";
+  box.classList.toggle("warn",state==="warn"); box.classList.toggle("done",state==="done");
+  $("timerBtn").textContent = state==="idle" ? "Start synced timer" : state==="done" ? "Restart timer" : "Stop timer";
+  if(state!==lastShown){
+    if(state==="done" && lastShown && lastShown!=="idle"){ beep(3); try{navigator.vibrate&&navigator.vibrate([300,150,300,150,500]);}catch(e){} }
+    if(state==="run" && lastShown==="wait"){ beep(1); }
+    lastShown=state;
+  }
+}
+setInterval(()=>{ if(S.inGame) tick(); },200);
+$("timerBtn").onclick=()=>{
+  try{ audio = audio || new (window.AudioContext||window.webkitAudioContext)(); audio.resume&&audio.resume(); }catch(e){}
+  const now=Date.now();
+  if(S.tStart && now<S.tEnd){ S.tStart=S.tEnd=0; lastShown="idle"; }
+  else { S.tStart=Math.ceil((now+2000)/5000)*5000; S.tEnd=S.tStart+S.timer*1000; lastShown="idle"; }
+  save(); tick();
+};
+
+// keep the screen on during a game, where supported
+let lock=null;
+async function keepAwake(){ try{ if("wakeLock" in navigator && !lock){ lock=await navigator.wakeLock.request("screen"); lock.addEventListener("release",()=>lock=null);} }catch(e){} }
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden && S.inGame) keepAwake(); });
+
+// ---------- custom dialogs (no browser pop-ups)
+const scrim=$("scrim"), dlg=$("dialog");
+function dialog({title,text="",html="",buttons}){
+  dlg.innerHTML = `<h2>${title}</h2>${text?`<p>${text}</p>`:""}${html}<div class="btns"></div>`;
+  const wrap=dlg.querySelector(".btns");
+  buttons.forEach(b=>{ const el=document.createElement("button"); el.className="btn "+(b.cls||"btn-ghost"); el.textContent=b.label;
+    el.onclick=()=>{ close(); b.onClick&&b.onClick(); }; wrap.appendChild(el); });
+  scrim.classList.add("open");
+}
+function close(){ scrim.classList.remove("open"); }
+scrim.addEventListener("click",e=>{ if(e.target===scrim) close(); });
+
+$("revealBtn").onclick=()=>dialog({title:"Reveal the Chameleon?",text:"Only do this after everyone has voted.",buttons:[
+  {label:"Reveal",cls:"btn-cham",onClick:()=>dialog({title:"The Chameleon was…",
+    html:`<div class="revealBig"><div class="display">Player ${RD.cham}</div><div class="cat" style="margin-top:10px">The word was</div><div class="w">${RD.word}</div></div>`,
+    text:"If the Chameleon was caught, they get one guess at the word to steal the round.",
+    buttons:[{label:"Next round →",cls:"btn-primary",onClick:nextRound},{label:"Close"}]})},
+  {label:"Not yet"}]});
+function nextRound(){ S.round++; S.tStart=S.tEnd=0; lastShown="idle"; save(); enterGame(); }
+$("nextBtn").onclick=()=>dialog({title:`Start round ${S.round+1}?`,text:"Everyone needs to tap Next round so the phones stay in sync. Check the sync names match afterwards.",buttons:[
+  {label:"Next round",cls:"btn-primary",onClick:nextRound},{label:"Cancel"}]});
+$("leave").onclick=()=>dialog({title:"Leave this game?",text:"You can rejoin with the same room code. Round numbers restart at 1, so everyone should rejoin together.",buttons:[
+  {label:"Leave",cls:"btn-cham",onClick:leaveGame},{label:"Stay"}]});
+
+// ---------- boot
+paintSetup();
+if(S.inGame && S.code) enterGame();
+})();
+</script>
+</body>
+</html>
