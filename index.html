@@ -2,104 +2,150 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0d241b">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2f9e6b">
 <title>Chameleon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d241b; --bg2:#123326; --card:#173f2f; --line:#24563f;
-  --text:#eef7ea; --muted:#9dbcaa; --lime:#b8f26b; --lime-d:#86c63f;
-  --cham:#ff7a59; --cham2:#ffb347; --danger:#ff6b6b;
+  --leaf:#2f9e6b;      /* page */
+  --leaf-deep:#22805a;
+  --ink:#123b2c;       /* outlines + text */
+  --paper:#fffdf6;     /* card surfaces */
+  --mist:#e9f5ee;      /* inputs */
+  --banana:#ffd447;    /* primary action */
+  --hibiscus:#ff5e7e;  /* the chameleon */
+  --sky:#8fd8f0;
+  --muted:#4d6f60;
+  --hex:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z' fill='%23ffffff' fill-opacity='.32' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,system-ui,sans-serif;min-height:100%}
-body{padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
-  background:radial-gradient(circle at 20% -10%,#1d4a37 0,transparent 55%),radial-gradient(circle at 110% 110%,#2a3d17 0,transparent 50%),var(--bg);
-  background-attachment:fixed}
-.wrap{max-width:460px;margin:0 auto}
-h1,h2,.display{font-family:"Baloo 2",Nunito,sans-serif;margin:0;line-height:1.05}
-h1{font-size:42px;font-weight:800;letter-spacing:-.5px}
-h1 span{color:var(--lime)}
-.sub{color:var(--muted);margin:6px 0 22px;font-size:15px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
-label.lbl{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.row{display:flex;gap:10px;align-items:center}
-.field{margin-bottom:16px}.field:last-child{margin-bottom:0}
-input[type=text],select{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px;font:inherit;font-size:17px;outline:none;appearance:none}
-input[type=text]:focus,select:focus{border-color:var(--lime)}
-#code{font-family:"Baloo 2";font-size:30px;letter-spacing:.3em;text-transform:uppercase;text-align:center;padding:8px 14px}
-select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
-.stepper{display:flex;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.stepper button{width:52px;height:52px;border:0;background:transparent;color:var(--lime);font-size:26px;font-weight:800;cursor:pointer}
-.stepper button:active{background:var(--line)}
-.stepper output{flex:1;text-align:center;font-family:"Baloo 2";font-size:26px;font-weight:800}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font:inherit;font-weight:800;font-size:17px;cursor:pointer;transition:transform .08s}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--lime);color:#12301f;box-shadow:0 6px 0 var(--lime-d)}
-.btn-primary:active{box-shadow:0 2px 0 var(--lime-d);transform:translateY(4px)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
-.btn-cham{background:var(--cham);color:#2b0f06;box-shadow:0 6px 0 #c4512f}
-.btn-small{width:auto;padding:10px 14px;font-size:14px;border-radius:12px}
-.hint{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.4}
-.how{font-size:14px;color:var(--muted);line-height:1.5}
-.how b{color:var(--text)}
-
-/* Game */
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.room{font-family:"Baloo 2";font-size:22px;font-weight:800}
-.room small{display:block;font-family:Nunito;font-size:13px;color:var(--muted);font-weight:700}
-.sync{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--muted)}
-.sync strong{color:var(--text);font-size:15px}
-.dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
-
-.role{position:relative;min-height:300px;border-radius:24px;border:2px solid var(--line);background:repeating-linear-gradient(135deg,#173f2f 0 14px,#1a4433 14px 28px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;cursor:pointer;margin-bottom:14px;overflow:hidden}
-.role .cover .big{font-size:64px;line-height:1}
-.role .cover .display{font-size:26px;margin-top:10px}
-.role .cover p{color:var(--muted);margin:6px 0 0;font-size:14px}
-.role .face{display:none;width:100%}
-.role.show{background:var(--bg2);border-color:var(--lime)}
-.role.show.isCham{border-color:var(--cham);background:linear-gradient(160deg,#3a1d14,#22140f)}
-.role.show .cover{display:none}.role.show .face{display:block}
-.cat{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.secret{font-family:"Baloo 2";font-size:44px;font-weight:800;color:var(--lime);margin:2px 0 12px;line-height:1}
-.chamTitle{font-family:"Baloo 2";font-size:34px;font-weight:800;color:var(--cham);margin:2px 0 4px;line-height:1}
-.chamSub{color:#ffcdb9;font-size:14px;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.grid div{background:rgba(255,255,255,.06);border-radius:8px;padding:7px 3px;font-size:11.5px;font-weight:700;line-height:1.15;min-height:38px;display:flex;align-items:center;justify-content:center}
-.grid div.hit{background:var(--lime);color:#12301f}
-
-.first{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.first .num{width:52px;height:52px;border-radius:16px;background:var(--lime);color:#12301f;display:flex;align-items:center;justify-content:center;font-family:"Baloo 2";font-size:28px;font-weight:800;flex:none}
-.first div:last-child{font-size:15px;line-height:1.3}
-.first small{color:var(--muted);display:block}
-
-.timer{text-align:center}
-.clock{position:relative;width:190px;height:190px;margin:4px auto 14px}
-.clock svg{transform:rotate(-90deg)}
-.clock .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.clock .t b{font-family:"Baloo 2";font-size:48px;font-weight:800;line-height:1}
-.clock .t span{font-size:13px;color:var(--muted);margin-top:4px}
-.timer.done .clock .t b{color:var(--cham)}
-.timer.warn .clock .t b{color:var(--cham2)}
-.actions{display:grid;gap:12px;margin-top:4px}
-
-/* Dialog */
-.scrim{position:fixed;inset:0;background:rgba(3,12,8,.72);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:10}
-.scrim.open{display:flex;animation:fade .15s}
-.dialog{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;animation:up .2s ease-out}
-.dialog h2{font-size:26px;margin-bottom:6px}
-.dialog p{color:var(--muted);margin:0 0 18px;line-height:1.45}
-.dialog .btns{display:grid;gap:10px}
-.revealBig{text-align:center;padding:6px 0 16px}
-.revealBig .display{font-size:52px;color:var(--cham);font-weight:800}
-.revealBig .w{font-family:"Baloo 2";font-size:30px;color:var(--lime);font-weight:800}
-@keyframes up{from{transform:translateY(30px);opacity:0}}
-@keyframes fade{from{opacity:0}}
+html,body{margin:0}
+body{
+  min-height:100vh;background:var(--leaf);color:var(--ink);
+  font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:16px;line-height:1.45;
+  padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 28px);
+}
+.wrap{max-width:440px;margin:0 auto}
+h1,h2{margin:0;font-weight:800;line-height:1;letter-spacing:-.02em}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--banana);outline-offset:3px}
 .hidden{display:none!important}
+
+/* ---------- shared pieces */
+.sheet{background:var(--paper);border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:18px}
+.btn{display:block;width:100%;border:3px solid var(--ink);border-radius:999px;padding:15px 20px;font-weight:800;font-size:18px;cursor:pointer;
+  box-shadow:0 5px 0 var(--ink);transition:transform .07s,box-shadow .07s;background:var(--paper)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn-go{background:var(--banana)}
+.btn-hot{background:var(--hibiscus);color:#fff}
+.btn-quiet{background:transparent;box-shadow:none;border-color:rgba(18,59,44,.35);font-weight:700}
+.btn-quiet:active{transform:none;background:rgba(18,59,44,.06)}
+.btn-chip{width:auto;display:inline-block;padding:8px 16px;font-size:15px;box-shadow:0 3px 0 var(--ink)}
+.btn-chip:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+
+/* ---------- setup */
+.hero{display:flex;align-items:flex-end;gap:12px;margin:6px 0 4px;color:var(--paper)}
+.hero h1{font-size:clamp(40px,13vw,54px);text-shadow:0 4px 0 var(--ink);-webkit-text-stroke:2px var(--ink);paint-order:stroke fill}
+.hero svg{width:min(92px,22vw);flex:none;margin-bottom:-4px}
+.tagline{color:var(--paper);font-size:17px;margin:12px 0 22px;max-width:30ch}
+.field{margin-bottom:18px}.field:last-child{margin-bottom:0}
+.lbl{display:block;font-weight:700;font-size:15px;margin-bottom:7px}
+.codeRow{display:flex;gap:10px}
+#code{flex:1;min-width:0;background:var(--mist);border:3px solid var(--ink);border-radius:16px;padding:6px 12px;
+  font-size:34px;font-weight:800;letter-spacing:.28em;text-align:center;text-transform:uppercase;outline:none}
+#code::placeholder{color:rgba(18,59,44,.25)}
+#code:focus{background:#fff}
+.codeRow .btn{width:auto;padding:0 18px;font-size:16px}
+.hint{font-size:14px;color:var(--muted);margin:8px 0 0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stepper{display:flex;align-items:center;background:var(--mist);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.stepper button{width:46px;height:50px;border:0;background:transparent;font-size:26px;font-weight:800;cursor:pointer}
+.stepper button:active{background:var(--sky)}
+.stepper output{flex:1;text-align:center;font-size:28px;font-weight:800}
+select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--ink);border-radius:16px;padding:12px 40px 12px 14px;font-size:17px;font-weight:700;outline:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1.5 1.5l5.5 5.5 5.5-5.5' stroke='%23123b2c' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center}
+.joinBtn{margin:22px 0 26px;font-size:20px;padding:17px}
+.rules{color:var(--paper)}
+.rules h2{font-size:22px;margin-bottom:10px}
+.rules ol{margin:0;padding-left:22px}
+.rules li{margin-bottom:8px;padding-left:4px}
+.rules li::marker{font-weight:800}
+
+/* ---------- game */
+.bar{display:flex;align-items:center;justify-content:space-between;color:var(--paper);margin-bottom:14px}
+.bar .code{font-size:34px;font-weight:800;letter-spacing:.12em;line-height:1;text-shadow:0 3px 0 var(--ink);-webkit-text-stroke:1.5px var(--ink);paint-order:stroke fill}
+.bar .meta{font-size:14px;font-weight:700;opacity:.9;margin-top:4px}
+.bar .btn{color:var(--ink)}
+
+.sync{display:flex;align-items:center;gap:12px;background:var(--leaf-deep);border-radius:16px;padding:10px 14px;margin-bottom:16px;color:var(--paper);font-size:14px}
+.sync .swatch{width:34px;height:34px;border-radius:11px;border:3px solid var(--ink);flex:none}
+.sync b{display:block;font-size:18px;line-height:1.1}
+
+/* the role card: the one loud element */
+.role{position:relative;border:3px solid var(--ink);border-radius:28px;box-shadow:0 7px 0 var(--ink);min-height:330px;margin-bottom:18px;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;cursor:pointer;overflow:hidden}
+.cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--ink);
+  background:var(--hex),linear-gradient(115deg,#2f9e6b,#8fd8f0,#ffd447,#ff5e7e,#2f9e6b,#8fd8f0);
+  background-size:28px 49px,400% 100%;animation:shift 9s linear infinite}
+@keyframes shift{to{background-position:0 0,100% 0}}
+.cover .pill{background:var(--paper);border:3px solid var(--ink);border-radius:999px;padding:14px 26px;font-size:22px;font-weight:800;box-shadow:0 4px 0 var(--ink)}
+.cover .who{margin-top:16px;background:var(--ink);color:var(--paper);border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
+.cover .fine{margin-top:10px;font-weight:700;font-size:14px}
+.face{display:none;padding:22px 18px 18px;background:var(--paper);min-height:330px}
+.role.show .cover{display:none}
+.role.show .face{display:block;animation:pop .14s ease-out}
+@keyframes pop{from{transform:scale(.97);opacity:.4}}
+.face .cat{font-weight:700;color:var(--muted);font-size:15px}
+.face .word{font-size:52px;font-weight:800;line-height:.95;margin:4px 0 16px;letter-spacing:-.02em}
+.role.cham .face{background:var(--hibiscus);color:#fff}
+.role.cham .face .cat{color:rgba(255,255,255,.85)}
+.role.cham .face .word{font-size:40px}
+.face .blend{margin:-8px 0 14px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.grid span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;padding:4px 3px;border-radius:10px;
+  background:var(--mist);font-size:12.5px;font-weight:700;line-height:1.1}
+.grid span.hit{background:var(--banana);outline:3px solid var(--ink)}
+.role.cham .grid span{background:rgba(255,255,255,.2);color:#fff}
+
+.first{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.first .n{width:56px;height:56px;flex:none;border-radius:18px;background:var(--sky);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800}
+.first b{display:block;font-size:18px;line-height:1.15}
+.first span{color:var(--muted);font-size:14px}
+
+.timer{background:var(--ink);color:var(--paper);border-radius:26px;padding:20px 18px 18px;margin-bottom:16px;text-align:center}
+.clock{position:relative;width:200px;height:200px;margin:0 auto 16px}
+.clock svg{display:block;transform:rotate(-90deg)}
+#ring{transition:stroke .3s}
+.clock .read{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.clock .read b{font-size:56px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock .read span{font-size:15px;opacity:.75;margin-top:6px;font-weight:600}
+.timer.done .read b{color:var(--hibiscus)}
+.timer .hint{color:rgba(255,253,246,.65);margin-top:10px}
+.timer .btn{color:var(--ink);border-color:var(--paper);box-shadow:0 5px 0 #071d15}
+.timer .btn:active{box-shadow:0 1px 0 #071d15}
+
+.endBtns{display:grid;gap:14px}
+.endBtns .btn-quiet{color:var(--paper);border-color:rgba(255,253,246,.5)}
+
+/* ---------- dialog */
+.scrim{position:fixed;inset:0;z-index:10;display:none;align-items:flex-end;justify-content:center;background:rgba(18,59,44,.6);
+  padding:16px 16px calc(env(safe-area-inset-bottom) + 16px)}
+.scrim.open{display:flex}
+.dialog{width:100%;max-width:440px;animation:rise .2s ease-out}
+.dialog h2{font-size:28px;margin-bottom:8px}
+.dialog p{margin:0 0 18px;color:var(--muted)}
+.dialog .btns{display:grid;gap:12px}
+.dialog .btn-quiet{color:var(--ink)}
+.reveal{text-align:center;background:var(--hibiscus);color:#fff;border:3px solid var(--ink);border-radius:20px;padding:18px;margin:6px 0 16px}
+.reveal .p{font-size:58px;font-weight:800;line-height:1}
+.reveal .w{margin-top:10px;font-weight:700}
+.reveal .w strong{display:block;font-size:30px;line-height:1.05}
+@keyframes rise{from{transform:translateY(40px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.cover{animation:none}.dialog,.role.show .face{animation:none}}
 </style>
 </head>
 <body>
@@ -107,34 +153,50 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
 
   <!-- SETUP -->
   <section id="setup">
-    <h1>🦎 <span>Chameleon</span></h1>
-    <p class="sub">One phone each. Everyone gets the secret word except the Chameleon.</p>
+    <div class="hero">
+      <h1>Chameleon</h1>
+      <svg viewBox="0 0 120 84" aria-hidden="true">
+        <path d="M6 76 Q60 68 116 76" stroke="#7a4b2a" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M6 76 Q60 68 116 76" stroke="#123b2c" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>
+        <g stroke="#123b2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M44 58 L40 72 M58 60 L60 72 M80 58 L78 71 M94 54 L98 70" fill="none"/>
+          <path d="M40 56 C14 60 8 42 18 34 C28 26 40 36 32 44 C28 48 22 45 24 40" fill="none" stroke-width="9" stroke="#123b2c"/>
+          <path d="M40 56 C14 60 8 42 18 34 C28 26 40 36 32 44 C28 48 22 45 24 40" fill="none" stroke-width="4" stroke="#ffd447"/>
+          <path d="M38 50 C40 30 64 20 86 26 C98 29 108 38 110 46 C106 54 96 57 86 57 L46 59 C40 59 37 56 38 50Z" fill="#ffd447"/>
+          <path d="M60 24 L64 16 L70 22 L76 15 L80 24" fill="#ff5e7e"/>
+          <path d="M50 46 C60 40 72 40 82 46" fill="none" stroke-width="2.5"/>
+          <circle cx="94" cy="40" r="8" fill="#fffdf6"/>
+        </g>
+        <circle cx="96" cy="40" r="3.4" fill="#123b2c"/>
+      </svg>
+    </div>
+    <p class="tagline">One phone each. Everyone gets the secret word except the chameleon, who has to bluff.</p>
 
-    <div class="panel">
+    <div class="sheet">
       <div class="field">
         <label class="lbl" for="code">Room code</label>
-        <div class="row">
+        <div class="codeRow">
           <input id="code" type="text" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD">
-          <button class="btn btn-ghost btn-small" id="newCode" style="flex:none">New</button>
+          <button class="btn btn-chip" id="newCode" type="button">New code</button>
         </div>
-        <div class="hint">One person taps New and reads the code out. Everyone else types it in.</div>
+        <p class="hint">One person makes a code and reads it out. Everyone else types it in.</p>
       </div>
-      <div class="two field">
+      <div class="pair field">
         <div>
-          <label class="lbl">Players</label>
-          <div class="stepper"><button data-step="players" data-d="-1">−</button><output id="players">5</output><button data-step="players" data-d="1">+</button></div>
+          <span class="lbl">Players</span>
+          <div class="stepper"><button type="button" data-step="players" data-d="-1" aria-label="Fewer players">−</button><output id="players">5</output><button type="button" data-step="players" data-d="1" aria-label="More players">+</button></div>
         </div>
         <div>
-          <label class="lbl">I'm player #</label>
-          <div class="stepper"><button data-step="seat" data-d="-1">−</button><output id="seat">1</output><button data-step="seat" data-d="1">+</button></div>
+          <span class="lbl">Your number</span>
+          <div class="stepper"><button type="button" data-step="seat" data-d="-1" aria-label="Lower number">−</button><output id="seat">1</output><button type="button" data-step="seat" data-d="1" aria-label="Higher number">+</button></div>
         </div>
       </div>
       <div class="field">
-        <label class="lbl" for="cat">Category</label>
+        <label class="lbl" for="cat">Word category</label>
         <select id="cat"></select>
       </div>
       <div class="field">
-        <label class="lbl" for="timer">Round timer</label>
+        <label class="lbl" for="timer">Timer</label>
         <select id="timer">
           <option value="60">1 minute</option>
           <option value="90">1½ minutes</option>
@@ -145,58 +207,62 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
       </div>
     </div>
 
-    <button class="btn btn-primary" id="join">Join game</button>
+    <button class="btn btn-go joinBtn" id="join" type="button">Join game</button>
 
-    <div class="panel how" style="margin-top:22px">
-      <b>How it works.</b> Number yourselves around the circle (1, 2, 3…), clockwise. Everyone sets the same room code, player count and category, and their own player number. Each round, everyone else gets the same secret word; the Chameleon only sees the category. Go round giving a one-word clue, then discuss and point at the Chameleon on three. If they're caught, they get one guess at the word to steal the win.
+    <div class="rules">
+      <h2>How to play</h2>
+      <ol>
+        <li>Number yourselves clockwise around the circle. Everyone enters the same code, player count and category.</li>
+        <li>Hold your card to see the secret word. The chameleon only sees the category.</li>
+        <li>Starting with the player shown, everyone gives a one-word clue.</li>
+        <li>When time's up, point at the chameleon on three. If they're caught, they get one guess at the word to win anyway.</li>
+      </ol>
     </div>
   </section>
 
   <!-- GAME -->
   <section id="game" class="hidden">
-    <div class="top">
-      <div class="room" id="roomLbl">ABCD<small>Round 1</small></div>
-      <button class="btn btn-ghost btn-small" id="leave">Leave</button>
+    <div class="bar">
+      <div><div class="code" id="roomCode">ABCD</div><div class="meta" id="roomMeta">Round 1</div></div>
+      <button class="btn btn-chip" id="leave" type="button">Leave</button>
     </div>
 
-    <div class="sync"><div class="dot" id="syncDot"></div><div>Sync check: <strong id="syncName">Teal Gecko</strong><br>Every phone should show this.</div></div>
+    <div class="sync"><div class="swatch" id="syncDot"></div><div><b id="syncName">Teal Gecko</b>Every phone should show this name.</div></div>
 
-    <div class="role" id="role">
+    <div class="role" id="role" role="button" aria-label="Press and hold to see your role">
       <div class="cover">
-        <div class="big">👆</div>
-        <div class="display">Press &amp; hold</div>
-        <p>to see your role. Hide your screen!</p>
-        <p id="youAre" style="margin-top:14px;color:var(--text);font-weight:800"></p>
+        <div class="pill">Press and hold</div>
+        <div class="who" id="youAre">You're player 1</div>
+        <div class="fine">Keep your screen hidden</div>
       </div>
       <div class="face" id="face"></div>
     </div>
 
-    <div class="panel first">
-      <div class="num" id="firstNum">3</div>
-      <div><b>Player <span id="firstNum2">3</span> gives the first clue</b><small>then go clockwise, one word each</small></div>
+    <div class="sheet first">
+      <div class="n" id="firstNum">3</div>
+      <div><b>Player <span id="firstNum2" style="color:inherit;font-size:inherit">3</span> goes first</b><span>Then clockwise, one word each</span></div>
     </div>
 
-    <div class="panel timer" id="timerBox">
+    <div class="timer" id="timerBox">
       <div class="clock">
-        <svg width="190" height="190" viewBox="0 0 190 190">
-          <circle cx="95" cy="95" r="84" fill="none" stroke="#24563f" stroke-width="12"/>
-          <circle id="ring" cx="95" cy="95" r="84" fill="none" stroke="#b8f26b" stroke-width="12" stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="0"/>
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(255,253,246,.14)" stroke-width="14"/>
+          <circle id="ring" cx="100" cy="100" r="86" fill="none" stroke="#ffd447" stroke-width="14" stroke-linecap="round" stroke-dasharray="540.4" stroke-dashoffset="0"/>
         </svg>
-        <div class="t"><b id="timeTxt">2:00</b><span id="timeSub">Ready</span></div>
+        <div class="read"><b id="timeTxt">2:00</b><span id="timeSub">Ready</span></div>
       </div>
-      <button class="btn btn-primary" id="timerBtn">Start synced timer</button>
-      <div class="hint">Tap together when someone says "go". Phones start on the same 5-second mark.</div>
+      <button class="btn btn-go" id="timerBtn" type="button">Start timer</button>
+      <p class="hint">Tap together when someone says go. All phones start on the same five-second mark.</p>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-cham" id="revealBtn">Reveal the Chameleon</button>
-      <button class="btn btn-ghost" id="nextBtn">Next round →</button>
+    <div class="endBtns">
+      <button class="btn btn-hot" id="revealBtn" type="button">Reveal the chameleon</button>
+      <button class="btn btn-quiet" id="nextBtn" type="button">Next round</button>
     </div>
   </section>
 </div>
 
-<!-- Custom dialog -->
-<div class="scrim" id="scrim"><div class="dialog" id="dialog"></div></div>
+<div class="scrim" id="scrim"><div class="sheet dialog" id="dialog" role="dialog" aria-modal="true"></div></div>
 
 <script>
 (() => {
@@ -219,7 +285,7 @@ const CAT_KEYS = Object.keys(CATS);
 const COLORS = [["Red","#ff5d5d"],["Orange","#ff9a3c"],["Gold","#ffd23f"],["Lime","#b8f26b"],["Teal","#2ec4b6"],["Sky","#5bc0eb"],["Blue","#4f7cff"],["Purple","#9b5de5"],["Pink","#f15bb5"],["Brown","#a47148"],["Silver","#cfd8dc"],["Mint","#7ae7c7"]];
 const CRITTERS = ["Gecko","Iguana","Frog","Toad","Newt","Turtle","Python","Tortoise","Salamander","Axolotl","Anole","Skink","Cobra","Viper","Dragon","Monitor"];
 
-// ---------- seeded randomness (same input -> same output on every phone)
+// Seeded randomness: same settings give the same result on every phone.
 function hashStr(str){ let h=1779033703^str.length;
   for(let i=0;i<str.length;i++){ h=Math.imul(h^str.charCodeAt(i),3432918353); h=h<<13|h>>>19; }
   h=Math.imul(h^h>>>16,2246822507); h=Math.imul(h^h>>>13,3266489909); return (h^h>>>16)>>>0; }
@@ -228,7 +294,6 @@ function rng(seedStr){ let a=hashStr(seedStr);
 function shuffle(arr,r){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function roundData(s){
-  // Deck of (category, word) pairs, shuffled once per room so words don't repeat until the deck runs out.
   const keys = s.cat==="__random" ? CAT_KEYS : [s.cat];
   let deck=[]; keys.forEach(k=>CATS[k].forEach((w,i)=>deck.push([k,i])));
   deck = shuffle(deck, rng(`deck|${s.code}|${s.cat}`));
@@ -241,16 +306,15 @@ function roundData(s){
   return {catKey, words:CATS[catKey], wi, word:CATS[catKey][wi], cham, first, syncName:`${color[0]} ${critter}`, syncColor:color[1]};
 }
 
-// ---------- state
 const $ = id => document.getElementById(id);
 const store = { get(){ try{ return JSON.parse(localStorage.getItem("chameleon-v1")||"null"); }catch(e){ return null; } },
                 set(v){ try{ localStorage.setItem("chameleon-v1",JSON.stringify(v)); }catch(e){} } };
 let S = Object.assign({code:"",players:5,seat:1,cat:"__random",timer:120,round:1,tStart:0,tEnd:0,inGame:false}, store.get()||{});
 const save = () => store.set(S);
 
-// ---------- setup screen
+// ---------- setup
 const catSel=$("cat");
-catSel.innerHTML = `<option value="__random">🎲 Mix of everything</option>` + CAT_KEYS.map(k=>`<option value="${k}">${k}</option>`).join("");
+catSel.innerHTML = `<option value="__random">A mix of everything</option>` + CAT_KEYS.map(k=>`<option value="${k}">${k}</option>`).join("");
 function newCode(){ const L="ABCDEFGHJKLMNPQRSTUVWXYZ"; let c=""; for(let i=0;i<4;i++) c+=L[Math.floor(Math.random()*L.length)]; return c; }
 function paintSetup(){ $("code").value=S.code; $("players").textContent=S.players; $("seat").textContent=S.seat; catSel.value=S.cat; $("timer").value=String(S.timer); }
 document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{
@@ -264,39 +328,42 @@ $("code").addEventListener("input",e=>{ e.target.value=e.target.value.toUpperCas
 catSel.onchange=()=>{ S.cat=catSel.value; save(); };
 $("timer").onchange=()=>{ S.timer=+$("timer").value; save(); };
 $("join").onclick=()=>{
-  if(S.code.length<3){ dialog({title:"Room code needed",text:"Tap New to make a code, or type the one someone else read out.",buttons:[{label:"OK",cls:"btn-primary"}]}); return; }
+  if(S.code.length<3){ dialog({title:"Add a room code",text:"Tap New code to make one, or type the code someone read out.",buttons:[{label:"OK",cls:"btn-go"}]}); return; }
   S.inGame=true; S.round=1; S.tStart=S.tEnd=0; save(); enterGame();
 };
 
-// ---------- game screen
+// ---------- game
 let RD=null;
 function enterGame(){
   $("setup").classList.add("hidden"); $("game").classList.remove("hidden");
   RD = roundData(S);
-  $("roomLbl").innerHTML = `${S.code}<small>Round ${S.round} · ${S.players} players · You're #${S.seat}</small>`;
+  $("roomCode").textContent = S.code;
+  $("roomMeta").textContent = `Round ${S.round}, ${S.players} players`;
   $("syncName").textContent = RD.syncName; $("syncDot").style.background = RD.syncColor;
   $("youAre").textContent = `You're player ${S.seat}`;
   $("firstNum").textContent = $("firstNum2").textContent = RD.first;
   const isCham = RD.cham===S.seat;
-  $("role").classList.toggle("isCham",isCham);
-  const grid = `<div class="grid">${RD.words.map((w,i)=>`<div class="${!isCham&&i===RD.wi?'hit':''}">${w}</div>`).join("")}</div>`;
+  $("role").classList.toggle("cham",isCham);
+  const grid = `<div class="grid">${RD.words.map((w,i)=>`<span class="${!isCham&&i===RD.wi?'hit':''}">${w}</span>`).join("")}</div>`;
   $("face").innerHTML = isCham
-    ? `<div class="cat">Category · ${RD.catKey}</div><div class="chamTitle">🦎 You're the Chameleon</div><div class="chamSub">You don't know the word. Blend in with a clue that sounds right.</div>${grid}`
-    : `<div class="cat">Category · ${RD.catKey}</div><div class="secret">${RD.word}</div>${grid}`;
+    ? `<div class="cat">${RD.catKey}</div><div class="word">You're the chameleon</div><p class="blend">You don't know the word. Give a clue that blends in.</p>${grid}`
+    : `<div class="cat">${RD.catKey}</div><div class="word">${RD.word}</div>${grid}`;
   window.scrollTo(0,0); tick(); keepAwake();
 }
 function leaveGame(){ S.inGame=false; save(); $("game").classList.add("hidden"); $("setup").classList.remove("hidden"); paintSetup(); }
 
-// hold-to-reveal
 const role=$("role");
 const show=e=>{ e.preventDefault(); role.classList.add("show"); };
 const hide=()=>role.classList.remove("show");
 role.addEventListener("pointerdown",show);
 ["pointerup","pointercancel","pointerleave"].forEach(ev=>role.addEventListener(ev,hide));
 role.addEventListener("contextmenu",e=>e.preventDefault());
+role.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); role.classList.add("show"); } });
+role.addEventListener("keyup",hide);
+role.tabIndex=0;
 document.addEventListener("visibilitychange",hide);
 
-// ---------- synced timer (phone clocks are network-synced; we start on the next 5-second boundary)
+// ---------- synced timer: starts on the next 5-second boundary of the (network-synced) phone clock
 let audio=null, lastShown="";
 function beep(times=3){ try{ audio = audio || new (window.AudioContext||window.webkitAudioContext)();
   for(let i=0;i<times;i++){ const o=audio.createOscillator(), g=audio.createGain(), t=audio.currentTime+i*0.35;
@@ -304,19 +371,19 @@ function beep(times=3){ try{ audio = audio || new (window.AudioContext||window.w
     g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.4,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.28);
     o.start(t); o.stop(t+0.3); } }catch(e){} }
 const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
-const CIRC = 527.8;
+const CIRC = 540.4;
 function tick(){
   const box=$("timerBox"), now=Date.now();
   let txt, sub, frac, state;
   if(!S.tStart){ txt=fmt(S.timer); sub="Ready"; frac=1; state="idle"; }
-  else if(now<S.tStart){ const s=Math.ceil((S.tStart-now)/1000); txt=String(s); sub="Get ready…"; frac=1; state="wait"; }
-  else if(now<S.tEnd){ const left=Math.ceil((S.tEnd-now)/1000); txt=fmt(left); sub="Clues & discussion"; frac=(S.tEnd-now)/(S.tEnd-S.tStart); state=left<=10?"warn":"run"; }
-  else { txt="0:00"; sub="Time's up — vote!"; frac=0; state="done"; }
+  else if(now<S.tStart){ txt=String(Math.ceil((S.tStart-now)/1000)); sub="Get ready"; frac=1; state="wait"; }
+  else if(now<S.tEnd){ const left=Math.ceil((S.tEnd-now)/1000); txt=fmt(left); sub="Give your clues"; frac=(S.tEnd-now)/(S.tEnd-S.tStart); state=left<=10?"warn":"run"; }
+  else { txt="0:00"; sub="Time to vote"; frac=0; state="done"; }
   $("timeTxt").textContent=txt; $("timeSub").textContent=sub;
   $("ring").style.strokeDashoffset = CIRC*(1-frac);
-  $("ring").style.stroke = state==="warn"||state==="done" ? "#ff7a59" : "#b8f26b";
-  box.classList.toggle("warn",state==="warn"); box.classList.toggle("done",state==="done");
-  $("timerBtn").textContent = state==="idle" ? "Start synced timer" : state==="done" ? "Restart timer" : "Stop timer";
+  $("ring").style.stroke = state==="warn"||state==="done" ? "#ff5e7e" : "#ffd447";
+  box.classList.toggle("done",state==="done");
+  $("timerBtn").textContent = state==="idle" ? "Start timer" : state==="done" ? "Restart timer" : "Stop timer";
   if(state!==lastShown){
     if(state==="done" && lastShown && lastShown!=="idle"){ beep(3); try{navigator.vibrate&&navigator.vibrate([300,150,300,150,500]);}catch(e){} }
     if(state==="run" && lastShown==="wait"){ beep(1); }
@@ -332,36 +399,35 @@ $("timerBtn").onclick=()=>{
   save(); tick();
 };
 
-// keep the screen on during a game, where supported
 let lock=null;
 async function keepAwake(){ try{ if("wakeLock" in navigator && !lock){ lock=await navigator.wakeLock.request("screen"); lock.addEventListener("release",()=>lock=null);} }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden && S.inGame) keepAwake(); });
 
-// ---------- custom dialogs (no browser pop-ups)
+// ---------- custom dialogs
 const scrim=$("scrim"), dlg=$("dialog");
 function dialog({title,text="",html="",buttons}){
-  dlg.innerHTML = `<h2>${title}</h2>${text?`<p>${text}</p>`:""}${html}<div class="btns"></div>`;
+  dlg.innerHTML = `<h2>${title}</h2>${html}${text?`<p>${text}</p>`:""}<div class="btns"></div>`;
   const wrap=dlg.querySelector(".btns");
-  buttons.forEach(b=>{ const el=document.createElement("button"); el.className="btn "+(b.cls||"btn-ghost"); el.textContent=b.label;
+  buttons.forEach(b=>{ const el=document.createElement("button"); el.type="button"; el.className="btn "+(b.cls||"btn-quiet"); el.textContent=b.label;
     el.onclick=()=>{ close(); b.onClick&&b.onClick(); }; wrap.appendChild(el); });
-  scrim.classList.add("open");
+  scrim.classList.add("open"); wrap.firstChild && wrap.firstChild.focus();
 }
 function close(){ scrim.classList.remove("open"); }
 scrim.addEventListener("click",e=>{ if(e.target===scrim) close(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") close(); });
 
-$("revealBtn").onclick=()=>dialog({title:"Reveal the Chameleon?",text:"Only do this after everyone has voted.",buttons:[
-  {label:"Reveal",cls:"btn-cham",onClick:()=>dialog({title:"The Chameleon was…",
-    html:`<div class="revealBig"><div class="display">Player ${RD.cham}</div><div class="cat" style="margin-top:10px">The word was</div><div class="w">${RD.word}</div></div>`,
-    text:"If the Chameleon was caught, they get one guess at the word to steal the round.",
-    buttons:[{label:"Next round →",cls:"btn-primary",onClick:nextRound},{label:"Close"}]})},
+$("revealBtn").onclick=()=>dialog({title:"Reveal the chameleon?",text:"Only do this after everyone has pointed.",buttons:[
+  {label:"Reveal",cls:"btn-hot",onClick:()=>dialog({title:"The chameleon was",
+    html:`<div class="reveal"><div class="p">Player ${RD.cham}</div><div class="w">The word was<strong>${RD.word}</strong></div></div>`,
+    text:"If the chameleon was caught, they get one guess at the word to win the round anyway.",
+    buttons:[{label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Close"}]})},
   {label:"Not yet"}]});
 function nextRound(){ S.round++; S.tStart=S.tEnd=0; lastShown="idle"; save(); enterGame(); }
-$("nextBtn").onclick=()=>dialog({title:`Start round ${S.round+1}?`,text:"Everyone needs to tap Next round so the phones stay in sync. Check the sync names match afterwards.",buttons:[
-  {label:"Next round",cls:"btn-primary",onClick:nextRound},{label:"Cancel"}]});
-$("leave").onclick=()=>dialog({title:"Leave this game?",text:"You can rejoin with the same room code. Round numbers restart at 1, so everyone should rejoin together.",buttons:[
-  {label:"Leave",cls:"btn-cham",onClick:leaveGame},{label:"Stay"}]});
+$("nextBtn").onclick=()=>dialog({title:`Start round ${S.round+1}?`,text:"Everyone needs to tap Next round to stay in sync. Then check that the names match.",buttons:[
+  {label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Cancel"}]});
+$("leave").onclick=()=>dialog({title:"Leave this game?",text:"You can rejoin with the same code. Rounds restart at 1, so everyone should rejoin together.",buttons:[
+  {label:"Leave game",cls:"btn-hot",onClick:leaveGame},{label:"Stay"}]});
 
-// ---------- boot
 paintSetup();
 if(S.inGame && S.code) enterGame();
 })();
