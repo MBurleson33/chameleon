@@ -60,6 +60,12 @@ button,input,select{font:inherit;color:inherit}
 #code:focus{background:#fff}
 .codeRow .btn{width:auto;padding:0 18px;font-size:16px}
 .hint{font-size:14px;color:var(--muted);margin:8px 0 0}
+.seatHint{margin:-8px 0 18px}
+#seatField.need .stepper{background:#fff3c4;animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{box-shadow:0 0 0 4px var(--banana)}}
+.hostNote{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.hostNote .n{width:56px;height:56px;flex:none;border-radius:18px;background:var(--banana);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:26px}
+.hostNote b{display:block;font-size:18px;line-height:1.15}.hostNote span{color:var(--muted);font-size:14px}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .stepper{display:flex;align-items:center;background:var(--mist);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
 .stepper button{width:46px;height:50px;border:0;background:transparent;font-size:26px;font-weight:800;cursor:pointer}
@@ -145,7 +151,7 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
 .reveal .w{margin-top:10px;font-weight:700}
 .reveal .w strong{display:block;font-size:30px;line-height:1.05}
 @keyframes rise{from{transform:translateY(40px);opacity:0}}
-@media (prefers-reduced-motion:reduce){.cover{animation:none}.dialog,.role.show .face{animation:none}}
+@media (prefers-reduced-motion:reduce){#seatField.need .stepper{animation:none}.cover{animation:none}.dialog,.role.show .face{animation:none}}
 </style>
 </head>
 <body>
@@ -186,11 +192,12 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
           <span class="lbl">Players</span>
           <div class="stepper"><button type="button" data-step="players" data-d="-1" aria-label="Fewer players">−</button><output id="players">5</output><button type="button" data-step="players" data-d="1" aria-label="More players">+</button></div>
         </div>
-        <div>
+        <div id="seatField">
           <span class="lbl">Your number</span>
           <div class="stepper"><button type="button" data-step="seat" data-d="-1" aria-label="Lower number">−</button><output id="seat">1</output><button type="button" data-step="seat" data-d="1" aria-label="Higher number">+</button></div>
         </div>
       </div>
+      <p class="hint seatHint">Count off clockwise around the table. Whoever made the code is player 1 and runs the timer and the reveal.</p>
       <div class="field">
         <label class="lbl" for="cat">Word category</label>
         <select id="cat"></select>
@@ -212,10 +219,10 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
     <div class="rules">
       <h2>How to play</h2>
       <ol>
-        <li>Number yourselves clockwise around the circle. Everyone enters the same code, player count and category.</li>
+        <li>Whoever makes the code is player 1. Count off clockwise from there. Everyone enters the same code, player count and category.</li>
         <li>Hold your card to see the secret word. The chameleon only sees the category.</li>
         <li>Starting with the player shown, everyone gives a one-word clue.</li>
-        <li>When time's up, point at the chameleon on three. If they're caught, they get one guess at the word to win anyway.</li>
+        <li>Player 1 runs the timer. When time's up, everyone points at the chameleon on three, then player 1 reveals who it was. If they're caught, they get one guess at the word to win anyway.</li>
       </ol>
     </div>
   </section>
@@ -243,6 +250,11 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
       <div><b>Player <span id="firstNum2" style="color:inherit;font-size:inherit">3</span> goes first</b><span>Then clockwise, one word each</span></div>
     </div>
 
+    <div class="sheet hostNote hidden" id="hostNote">
+      <div class="n" aria-hidden="true">⏱️</div>
+      <div><b>Player 1 is the host</b><span>They run the timer and reveal the chameleon. Point on three when time's up.</span></div>
+    </div>
+
     <div class="timer" id="timerBox">
       <div class="clock">
         <svg width="200" height="200" viewBox="0 0 200 200">
@@ -252,7 +264,7 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
         <div class="read"><b id="timeTxt">2:00</b><span id="timeSub">Ready</span></div>
       </div>
       <button class="btn btn-go" id="timerBtn" type="button">Start timer</button>
-      <p class="hint">Tap together when someone says go. All phones start on the same five-second mark.</p>
+      <p class="hint">Only your phone has the timer, so call out when time's up.</p>
     </div>
 
     <div class="endBtns">
@@ -313,17 +325,18 @@ function roundData(s){
 const $ = id => document.getElementById(id);
 const store = { get(){ try{ return JSON.parse(localStorage.getItem("chameleon-v1")||"null"); }catch(e){ return null; } },
                 set(v){ try{ localStorage.setItem("chameleon-v1",JSON.stringify(v)); }catch(e){} } };
-let S = Object.assign({code:"",players:5,seat:1,cat:"__thanks",timer:120,round:1,tStart:0,tEnd:0,inGame:false}, store.get()||{});
+let S = Object.assign({code:"",players:5,seat:0,cat:"__thanks",timer:120,round:1,tStart:0,tEnd:0,inGame:false}, store.get()||{});
 const save = () => store.set(S);
 
 // ---------- setup
 const catSel=$("cat");
 catSel.innerHTML = `<option value="__thanks">🦃 Thanksgiving mix</option><option value="__random">A mix of everything</option>` + CAT_KEYS.map(k=>`<option value="${k}">${k}</option>`).join("");
 function newCode(){ const L="ABCDEFGHJKLMNPQRSTUVWXYZ"; let c=""; for(let i=0;i<4;i++) c+=L[Math.floor(Math.random()*L.length)]; return c; }
-function paintSetup(){ $("code").value=S.code; $("players").textContent=S.players; $("seat").textContent=S.seat; catSel.value=S.cat; $("timer").value=String(S.timer); }
+function paintSetup(){ $("code").value=S.code; $("players").textContent=S.players; $("seat").textContent=S.seat||"?"; $("seatField").classList.toggle("need",!S.seat); catSel.value=S.cat; $("timer").value=String(S.timer); }
 document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{
   const d=+b.dataset.d;
   if(b.dataset.step==="players"){ S.players=Math.min(12,Math.max(3,S.players+d)); if(S.seat>S.players) S.seat=S.players; }
+  else if(!S.seat) S.seat=1;
   else S.seat=Math.min(S.players,Math.max(1,S.seat+d));
   paintSetup(); save();
 }));
@@ -333,6 +346,7 @@ catSel.onchange=()=>{ S.cat=catSel.value; save(); };
 $("timer").onchange=()=>{ S.timer=+$("timer").value; save(); };
 $("join").onclick=()=>{
   if(S.code.length<3){ dialog({title:"Add a room code",text:"Tap New code to make one, or type the code someone read out.",buttons:[{label:"OK",cls:"btn-go"}]}); return; }
+  if(!S.seat){ dialog({title:"Pick your number",text:"Count off clockwise around the table and set Your number. Player 1 is the host who runs the timer.",buttons:[{label:"OK",cls:"btn-go"}]}); return; }
   S.inGame=true; S.round=1; S.tStart=S.tEnd=0; save(); enterGame();
 };
 
@@ -344,7 +358,9 @@ function enterGame(){
   $("roomCode").textContent = S.code;
   $("roomMeta").textContent = `Round ${S.round}, ${S.players} players`;
   $("syncName").textContent = RD.syncName; $("syncDot").style.background = RD.syncColor;
-  $("youAre").textContent = `You're player ${S.seat}`;
+  $("youAre").textContent = S.seat===1 ? "You're player 1 (host)" : `You're player ${S.seat}`;
+  const isHost = S.seat===1;
+  $("timerBox").classList.toggle("hidden",!isHost); $("revealBtn").classList.toggle("hidden",!isHost); $("hostNote").classList.toggle("hidden",isHost);
   $("firstNum").textContent = $("firstNum2").textContent = RD.first;
   const isCham = RD.cham===S.seat;
   $("role").classList.toggle("cham",isCham);
@@ -427,7 +443,7 @@ $("revealBtn").onclick=()=>dialog({title:"Reveal the chameleon?",text:"Only do t
     buttons:[{label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Close"}]})},
   {label:"Not yet"}]});
 function nextRound(){ S.round++; S.tStart=S.tEnd=0; lastShown="idle"; save(); enterGame(); }
-$("nextBtn").onclick=()=>dialog({title:`Start round ${S.round+1}?`,text:"Everyone needs to tap Next round to stay in sync. Then check that the names match.",buttons:[
+$("nextBtn").onclick=()=>dialog({title:`Start round ${S.round+1}?`,text:"Everyone taps Next round together to stay in sync. Then check that the names match.",buttons:[
   {label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Cancel"}]});
 $("leave").onclick=()=>dialog({title:"Leave this game?",text:"You can rejoin with the same code. Rounds restart at 1, so everyone should rejoin together.",buttons:[
   {label:"Leave game",cls:"btn-hot",onClick:leaveGame},{label:"Stay"}]});
