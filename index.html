@@ -268,6 +268,9 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
 (() => {
 "use strict";
 const CATS = {
+  "Thanksgiving Table":["Turkey","Stuffing","Mashed Potatoes","Gravy","Cranberry Sauce","Pumpkin Pie","Green Bean Casserole","Sweet Potatoes","Dinner Rolls","Corn","Pecan Pie","Mac & Cheese","Deviled Eggs","Ham","Apple Pie","Whipped Cream"],
+  "Turkey Day":["Parade","Football","Black Friday","Pilgrims","Mayflower","Wishbone","Leftovers","Kids' Table","Nap","Road Trip","Cornucopia","Scarecrow","Hayride","Fall Leaves","Stretchy Pants","Grace"],
+  "Thankful For":["Family","Friends","Coffee","Pets","Home","Health","Church","Grandparents","Sunshine","Weekends","Music","Hot Showers","Good Books","Pajamas","Freedom","Laughter"],
   "Food":["Pizza","Tacos","Sushi","Burger","Pancakes","Spaghetti","Salad","Ice Cream","Popcorn","Hot Dog","Burrito","Fried Chicken","Donut","Soup","Steak","Cupcake"],
   "Animals":["Lion","Penguin","Giraffe","Shark","Elephant","Kangaroo","Owl","Snake","Dolphin","Horse","Monkey","Bear","Frog","Eagle","Turtle","Zebra"],
   "Places":["Beach","Hospital","Library","Airport","Zoo","Church","Movie Theater","Gym","Farm","Museum","Mall","School","Restaurant","Fire Station","Campground","Bowling Alley"],
@@ -282,6 +285,7 @@ const CATS = {
   "Toys & Games":["Yo-yo","Kite","Teddy Bear","Jump Rope","Puzzle","Doll","Blocks","Bubbles","Slinky","Frisbee","Marbles","Rubik's Cube","Play-Doh","Board Game","Water Gun","Video Game"]
 };
 const CAT_KEYS = Object.keys(CATS);
+const THANKS_KEYS = ["Thanksgiving Table","Turkey Day","Thankful For"];
 const COLORS = [["Red","#ff5d5d"],["Orange","#ff9a3c"],["Gold","#ffd23f"],["Lime","#b8f26b"],["Teal","#2ec4b6"],["Sky","#5bc0eb"],["Blue","#4f7cff"],["Purple","#9b5de5"],["Pink","#f15bb5"],["Brown","#a47148"],["Silver","#cfd8dc"],["Mint","#7ae7c7"]];
 const CRITTERS = ["Gecko","Iguana","Frog","Toad","Newt","Turtle","Python","Tortoise","Salamander","Axolotl","Anole","Skink","Cobra","Viper","Dragon","Monitor"];
 
@@ -294,7 +298,7 @@ function rng(seedStr){ let a=hashStr(seedStr);
 function shuffle(arr,r){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function roundData(s){
-  const keys = s.cat==="__random" ? CAT_KEYS : [s.cat];
+  const keys = s.cat==="__random" ? CAT_KEYS : s.cat==="__thanks" ? THANKS_KEYS : [s.cat];
   let deck=[]; keys.forEach(k=>CATS[k].forEach((w,i)=>deck.push([k,i])));
   deck = shuffle(deck, rng(`deck|${s.code}|${s.cat}`));
   const [catKey, wi] = deck[(s.round-1) % deck.length];
@@ -309,12 +313,12 @@ function roundData(s){
 const $ = id => document.getElementById(id);
 const store = { get(){ try{ return JSON.parse(localStorage.getItem("chameleon-v1")||"null"); }catch(e){ return null; } },
                 set(v){ try{ localStorage.setItem("chameleon-v1",JSON.stringify(v)); }catch(e){} } };
-let S = Object.assign({code:"",players:5,seat:1,cat:"__random",timer:120,round:1,tStart:0,tEnd:0,inGame:false}, store.get()||{});
+let S = Object.assign({code:"",players:5,seat:1,cat:"__thanks",timer:120,round:1,tStart:0,tEnd:0,inGame:false}, store.get()||{});
 const save = () => store.set(S);
 
 // ---------- setup
 const catSel=$("cat");
-catSel.innerHTML = `<option value="__random">A mix of everything</option>` + CAT_KEYS.map(k=>`<option value="${k}">${k}</option>`).join("");
+catSel.innerHTML = `<option value="__thanks">🦃 Thanksgiving mix</option><option value="__random">A mix of everything</option>` + CAT_KEYS.map(k=>`<option value="${k}">${k}</option>`).join("");
 function newCode(){ const L="ABCDEFGHJKLMNPQRSTUVWXYZ"; let c=""; for(let i=0;i<4;i++) c+=L[Math.floor(Math.random()*L.length)]; return c; }
 function paintSetup(){ $("code").value=S.code; $("players").textContent=S.players; $("seat").textContent=S.seat; catSel.value=S.cat; $("timer").value=String(S.timer); }
 document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{
