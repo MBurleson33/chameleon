@@ -177,6 +177,17 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
 .reveal .w strong{display:block;font-size:30px;line-height:1.05}
 @keyframes rise{from{transform:translateY(40px);opacity:0}}
 @media (prefers-reduced-motion:reduce){#seatField.need .stepper{animation:none}.cover{animation:none}.dialog,.role.show .face{animation:none}}
+
+.rulesFab{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:9;border:3px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);font:800 16px "Bricolage Grotesque",system-ui,sans-serif;padding:10px 16px;box-shadow:0 4px 0 var(--ink);cursor:pointer}
+.rulesFab:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.rulesDlg{max-height:min(82vh,760px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.rulesDlg h2{font-size:28px;margin:0 0 4px}
+.rulesDlg h3{font-size:18px;margin:16px 0 4px;letter-spacing:-.01em}
+.rulesDlg p,.rulesDlg li{color:var(--ink);font-size:16px;line-height:1.45}
+.rulesDlg p{margin:0 0 6px}.rulesDlg ul{margin:0;padding-left:20px}.rulesDlg li{margin-bottom:5px}
+.rulesDlg .tip{background:var(--mist);border-radius:14px;padding:10px 12px;margin:10px 0 4px;font-size:15px}
+.rulesFoot{position:sticky;bottom:-18px;background:var(--paper);padding:12px 0 18px;margin:8px 0 -18px;border-top:2px dashed rgba(0,0,0,.12)}.rulesFoot .btn{margin:0}
+body{padding-bottom:calc(env(safe-area-inset-bottom) + 84px)!important}
 </style>
 </head>
 <body>
@@ -674,6 +685,27 @@ paintSetup();
 if(O.code){ call("GET").then(j=>{ if(j.lobby.find(p=>p.id===O.pid)||j.room.players.find(p=>p.id===O.pid)) goOnline(j); else { O.code=""; oSave(); } }).catch(()=>{ O.code=""; oSave(); }); }
 else if(S.inGame && S.code){ $("onlinePane").classList.add("hidden"); $("offlinePane").classList.remove("hidden"); enterGame(); }
 })();
+</script>
+<button class="rulesFab" id="rulesFab" type="button" aria-haspopup="dialog">Rules</button>
+<div class="scrim" id="rulesScrim"><div class="sheet dialog rulesDlg" role="dialog" aria-modal="true" aria-label="Rules"><h2>How to play Chameleon</h2>
+<p>Everyone gets the same secret word except one person, the chameleon. Find the bluffer before they figure out the word.</p>
+<h3>1. Join</h3>
+<ul><li>The host taps <b>Host a new game</b> and reads the 4-letter code out loud.</li><li>Everyone else enters their name and the code. The host picks a category and timer, then starts.</li></ul>
+<h3>2. Check your card</h3>
+<ul><li>Press and hold your card so nobody else can see it.</li><li>Everyone sees the category, a grid of 16 words, and the secret word highlighted.</li><li>The chameleon sees the category and the grid, but not which word it is.</li></ul>
+<h3>3. Give clues</h3>
+<ul><li>Start with the player shown and go in the order on screen. Each person says <b>one word</b> related to the secret word.</li><li>Never say the secret word itself.</li><li>Too obvious, and the chameleon figures out the word. Too vague, and people think you're the chameleon.</li><li>The chameleon listens and bluffs a clue that fits in.</li></ul>
+<h3>4. Talk it over and point</h3>
+<ul><li>When the timer runs out (or everyone has given a clue), discuss who seemed off.</li><li>On three, everyone points at who they think the chameleon is. The person with the most fingers is accused.</li><li>Tie? Quick re-vote between just the tied players. Still tied, the host decides.</li></ul>
+<h3>5. Reveal and who wins</h3>
+<ul><li>The host taps <b>Reveal</b> and the answer shows on every phone.</li><li><b>Wrong person accused:</b> the chameleon wins.</li><li><b>Chameleon caught:</b> they get one guess at the word from the grid. Right, and the chameleon still wins. Wrong, and everyone else wins.</li></ul>
+<div class="tip"><b>No signal?</b> Use "Play offline" on the start screen. Everyone enters the same code, player count and category, counts off clockwise, and player 1 runs the timer.</div><div class="rulesFoot"><button class="btn btn-go" id="rulesClose" type="button">Got it</button></div></div></div>
+<script>
+{const sc=document.getElementById("rulesScrim");
+document.getElementById("rulesFab").onclick=()=>{sc.classList.add("open");document.getElementById("rulesClose").focus();};
+document.getElementById("rulesClose").onclick=()=>sc.classList.remove("open");
+sc.addEventListener("click",e=>{if(e.target===sc)sc.classList.remove("open");});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")sc.classList.remove("open");});}
 </script>
 </body>
 </html>
