@@ -137,6 +137,31 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
 .endBtns{display:grid;gap:14px}
 .endBtns .btn-quiet{color:var(--paper);border-color:rgba(255,253,246,.5)}
 
+/* ---------- online */
+.inp{width:100%;background:var(--mist);border:3px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:20px;font-weight:700;outline:none}
+.inp:focus{background:#fff}
+.inp.codeInp{font-size:30px;letter-spacing:.28em;text-align:center;text-transform:uppercase;padding:6px 12px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:700;font-size:14px;margin:18px 0}
+.or::before,.or::after{content:"";flex:1;height:2px;background:rgba(18,59,44,.18)}
+.err{color:#c0233f;font-weight:700;font-size:15px;margin:10px 0 0}.err:empty{display:none}
+.offLink{margin-top:14px;color:var(--paper);border-color:rgba(255,253,246,.5)}
+.plist{list-style:none;margin:0;padding:0}
+.plist li{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:2px dashed rgba(18,59,44,.15)}
+.plist li:last-child{border-bottom:0}
+.plist .num{width:36px;height:36px;flex:none;border-radius:12px;background:var(--sky);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:800}
+.plist .nm{font-weight:800;font-size:18px;flex:1}
+.plist .badge{background:var(--banana);border:2px solid var(--ink);border-radius:999px;padding:1px 9px;font-size:13px;font-weight:800}
+.plist .me{color:var(--muted);font-weight:700;font-size:14px}
+.plist .kick{background:none;border:0;color:#c0233f;font-weight:700;text-decoration:underline;cursor:pointer;min-height:40px}
+.bigcode{font-size:46px;font-weight:800;letter-spacing:.16em;text-align:center;line-height:1;margin:6px 0 4px}
+.wait{text-align:center;color:var(--paper);font-weight:700;margin:16px 0}
+.dotty::after{content:"";animation:dots 1.4s steps(4) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+.order{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.order span{background:var(--mist);border-radius:999px;padding:2px 10px;font-size:14px;font-weight:700}
+.net{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);z-index:20;background:var(--ink);color:var(--paper);border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;display:none}
+.net.on{display:block}
+
 /* ---------- dialog */
 .scrim{position:fixed;inset:0;z-index:10;display:none;align-items:flex-end;justify-content:center;background:rgba(18,59,44,.6);
   padding:16px 16px calc(env(safe-area-inset-bottom) + 16px)}
@@ -178,6 +203,33 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
     </div>
     <p class="tagline">One phone each. Everyone gets the secret word except the chameleon, who has to bluff.</p>
 
+    <div id="onlinePane">
+      <div class="sheet">
+        <div class="field">
+          <label class="lbl" for="oName">Your name</label>
+          <input class="inp" id="oName" maxlength="20" autocomplete="off" placeholder="First name">
+        </div>
+        <button class="btn btn-go" id="hostBtn" type="button">Host a new game</button>
+        <div class="or">or join a game</div>
+        <div class="codeRow">
+          <input class="inp codeInp" id="oCode" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CODE" inputmode="text">
+          <button class="btn btn-chip" id="joinBtn" type="button" style="padding:0 20px;font-size:17px">Join</button>
+        </div>
+        <p class="err" id="oErr"></p>
+      </div>
+      <div class="rules" style="margin-top:26px">
+        <h2>How to play</h2>
+        <ol>
+          <li>One person taps Host and reads out the code. Everyone else joins with it.</li>
+          <li>Hold your card to see the secret word. The chameleon only sees the category.</li>
+          <li>Starting with the player shown, everyone gives a one-word clue.</li>
+          <li>When the host's timer runs out, point at the chameleon on three. The host reveals it on every phone. If the chameleon was caught, they get one guess at the word to win anyway.</li>
+        </ol>
+      </div>
+      <button class="btn btn-quiet offLink" id="toOffline" type="button">No signal? Play offline</button>
+    </div>
+
+    <div id="offlinePane" class="hidden">
     <div class="sheet">
       <div class="field">
         <label class="lbl" for="code">Room code</label>
@@ -225,6 +277,35 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
         <li>Player 1 runs the timer. When time's up, everyone points at the chameleon on three, then player 1 reveals who it was. If they're caught, they get one guess at the word to win anyway.</li>
       </ol>
     </div>
+    <button class="btn btn-quiet offLink" id="toOnline" type="button">Back to online play</button>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section id="lobby" class="hidden">
+    <div class="bar">
+      <div><div class="code" id="lbCode">ABCD</div><div class="meta">Room code</div></div>
+      <button class="btn btn-chip" id="lbLeave" type="button">Leave</button>
+    </div>
+    <div class="sheet" style="margin-bottom:16px">
+      <p style="margin:0 0 10px;font-weight:700" id="lbCount">Players</p>
+      <ul class="plist" id="lbList"></ul>
+    </div>
+    <div class="sheet hidden" id="lbHost">
+      <div class="field">
+        <label class="lbl" for="lbCat">Word category</label>
+        <select id="lbCat"></select>
+      </div>
+      <div class="field">
+        <label class="lbl" for="lbTimer">Timer</label>
+        <select id="lbTimer">
+          <option value="60">1 minute</option><option value="90">1½ minutes</option><option value="120">2 minutes</option><option value="180">3 minutes</option><option value="300">5 minutes</option>
+        </select>
+      </div>
+      <button class="btn btn-go" id="lbStart" type="button">Start the game</button>
+      <p class="hint" id="lbHint">Wait until everyone's on the list.</p>
+    </div>
+    <p class="wait hidden" id="lbWait"><span class="dotty">Waiting for the host to start</span></p>
   </section>
 
   <!-- GAME -->
@@ -264,16 +345,18 @@ select{width:100%;appearance:none;background:var(--mist);border:3px solid var(--
         <div class="read"><b id="timeTxt">2:00</b><span id="timeSub">Ready</span></div>
       </div>
       <button class="btn btn-go" id="timerBtn" type="button">Start timer</button>
-      <p class="hint">Only your phone has the timer, so call out when time's up.</p>
+      <p class="hint" id="timerHint">Only your phone has the timer, so call out when time's up.</p>
     </div>
 
     <div class="endBtns">
       <button class="btn btn-hot" id="revealBtn" type="button">Reveal the chameleon</button>
       <button class="btn btn-quiet" id="nextBtn" type="button">Next round</button>
+      <button class="btn btn-quiet hidden" id="toLobbyBtn" type="button">Change players or settings</button>
     </div>
   </section>
 </div>
 
+<div class="net" id="net">Reconnecting…</div>
 <div class="scrim" id="scrim"><div class="sheet dialog" id="dialog" role="dialog" aria-modal="true"></div></div>
 
 <script>
@@ -352,16 +435,25 @@ $("join").onclick=()=>{
 
 // ---------- game
 let RD=null;
+const FIRST_HTML = document.querySelector(".first").innerHTML;
+const esc = t => String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function enterGame(){
   $("setup").classList.add("hidden"); $("game").classList.remove("hidden");
   RD = roundData(S);
   $("roomCode").textContent = S.code;
   $("roomMeta").textContent = `Round ${S.round}, ${S.players} players`;
   $("syncName").textContent = RD.syncName; $("syncDot").style.background = RD.syncColor;
-  $("youAre").textContent = S.seat===1 ? "You're player 1 (host)" : `You're player ${S.seat}`;
-  const isHost = S.seat===1;
-  $("timerBox").classList.toggle("hidden",!isHost); $("revealBtn").classList.toggle("hidden",!isHost); $("hostNote").classList.toggle("hidden",isHost);
-  $("firstNum").textContent = $("firstNum2").textContent = RD.first;
+  const isHost = S.online ? O.isHost : S.seat===1;
+  $("youAre").textContent = S.online ? (isHost ? `${O.name} (host)` : O.name) : (S.seat===1 ? "You're player 1 (host)" : `You're player ${S.seat}`);
+  if(S.online){
+    const P=O.players, f=RD.first-1, ord=P.slice(f).concat(P.slice(0,f));
+    document.querySelector(".first").innerHTML = `<div class="n">${RD.first}</div><div><b>${esc(P[f].name)} goes first</b><div class="order">${ord.map(p=>`<span>${esc(p.name)}</span>`).join("")}</div></div>`;
+    document.querySelector("#hostNote b").textContent = `${O.hostName} is the host`;
+    $("nextBtn").classList.toggle("hidden",!isHost); $("toLobbyBtn").classList.toggle("hidden",!isHost);
+  } else { $("toLobbyBtn").classList.add("hidden"); $("nextBtn").classList.remove("hidden"); }
+  $("timerBox").classList.toggle("hidden",!isHost && !S.online); $("timerBtn").classList.toggle("hidden",!isHost);
+  $("timerHint").textContent = !isHost ? "The host starts the timer for everyone." : S.online ? "Starts on every phone at once." : "Only your phone has the timer, so call out when time's up."; $("revealBtn").classList.toggle("hidden",!isHost); $("hostNote").classList.toggle("hidden",isHost);
+  if(!S.online){ document.querySelector(".first").innerHTML = FIRST_HTML; $("firstNum").textContent = $("firstNum2").textContent = RD.first; }
   const isCham = RD.cham===S.seat;
   $("role").classList.toggle("cham",isCham);
   const grid = `<div class="grid">${RD.words.map((w,i)=>`<span class="${!isCham&&i===RD.wi?'hit':''}">${w}</span>`).join("")}</div>`;
@@ -413,6 +505,7 @@ function tick(){
 setInterval(()=>{ if(S.inGame) tick(); },200);
 $("timerBtn").onclick=()=>{
   try{ audio = audio || new (window.AudioContext||window.webkitAudioContext)(); audio.resume&&audio.resume(); }catch(e){}
+  if(S.online){ api({action:"timer"}); return; }
   const now=Date.now();
   if(S.tStart && now<S.tEnd){ S.tStart=S.tEnd=0; lastShown="idle"; }
   else { S.tStart=Math.ceil((now+2000)/5000)*5000; S.tEnd=S.tStart+S.timer*1000; lastShown="idle"; }
@@ -436,20 +529,150 @@ function close(){ scrim.classList.remove("open"); }
 scrim.addEventListener("click",e=>{ if(e.target===scrim) close(); });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") close(); });
 
-$("revealBtn").onclick=()=>dialog({title:"Reveal the chameleon?",text:"Only do this after everyone has pointed.",buttons:[
+$("revealBtn").onclick=()=>S.online ? dialog({title:"Reveal the chameleon?",text:"It shows up on everyone's phone. Only do this after everyone has pointed.",buttons:[
+  {label:"Reveal to everyone",cls:"btn-hot",onClick:()=>api({action:"reveal"})},{label:"Not yet"}]}) : dialog({title:"Reveal the chameleon?",text:"Only do this after everyone has pointed.",buttons:[
   {label:"Reveal",cls:"btn-hot",onClick:()=>dialog({title:"The chameleon was",
     html:`<div class="reveal"><div class="p">Player ${RD.cham}</div><div class="w">The word was<strong>${RD.word}</strong></div></div>`,
     text:"If the chameleon was caught, they get one guess at the word to win the round anyway.",
     buttons:[{label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Close"}]})},
   {label:"Not yet"}]});
-function nextRound(){ S.round++; S.tStart=S.tEnd=0; lastShown="idle"; save(); enterGame(); }
-$("nextBtn").onclick=()=>dialog({title:`Start round ${S.round+1}?`,text:"Everyone taps Next round together to stay in sync. Then check that the names match.",buttons:[
+function nextRound(){ if(S.online){ api({action:"next"}); return; } S.round++; S.tStart=S.tEnd=0; lastShown="idle"; save(); enterGame(); }
+$("nextBtn").onclick=()=>S.online ? dialog({title:`Start round ${S.round+1}?`,text:"Everyone's phone moves to the new round.",buttons:[{label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Cancel"}]}) : dialog({title:`Start round ${S.round+1}?`,text:"Everyone taps Next round together to stay in sync. Then check that the names match.",buttons:[
   {label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Cancel"}]});
-$("leave").onclick=()=>dialog({title:"Leave this game?",text:"You can rejoin with the same code. Rounds restart at 1, so everyone should rejoin together.",buttons:[
+$("leave").onclick=()=>S.online ? leaveOnline() : dialog({title:"Leave this game?",text:"You can rejoin with the same code. Rounds restart at 1, so everyone should rejoin together.",buttons:[
   {label:"Leave game",cls:"btn-hot",onClick:leaveGame},{label:"Stay"}]});
 
+// ---------- online play (Vercel API + Upstash)
+const OKEY="chameleon-online-v1";
+let O={pid:"",name:"",code:"",isHost:false,players:[],hostName:""};
+try{ Object.assign(O, JSON.parse(localStorage.getItem(OKEY)||"{}")); }catch(e){}
+if(!O.pid){ O.pid=(Math.random().toString(36).slice(2)+Date.now().toString(36)).slice(0,20); }
+const oSave=()=>{ try{ localStorage.setItem(OKEY,JSON.stringify({pid:O.pid,name:O.name,code:O.code})); }catch(e){} };
+oSave();
+let offset=0, poller=null, last={phase:"",round:-1,revealed:false,pkey:""}, busy=false, fails=0;
+$("oName").value=O.name||"";
+$("lbCat").innerHTML=catSel.innerHTML;
+
+async function call(method, body){
+  const t0=Date.now();
+  const r = await fetch(method==="GET" ? `/api/room?code=${encodeURIComponent(O.code)}` : "/api/room", method==="GET" ? {cache:"no-store"} : {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const j = await r.json().catch(()=>({error:"The game server didn't answer."}));
+  if(j.now) offset = j.now - (t0+Date.now())/2;
+  if(!r.ok) { const e=new Error(j.error||"Something went wrong."); e.status=r.status; throw e; }
+  return j;
+}
+async function api(body){
+  try{ const j=await call("POST",Object.assign({pid:O.pid,code:O.code},body)); apply(j); }
+  catch(e){ dialog({title:"That didn't go through",text:e.message,buttons:[{label:"OK",cls:"btn-go"}]}); }
+}
+function setErr(t){ $("oErr").textContent=t||""; }
+function needName(){ const n=$("oName").value.trim(); if(!n){ setErr("Add your name first."); $("oName").focus(); return null; } O.name=n; oSave(); return n; }
+
+$("hostBtn").onclick=async()=>{
+  const name=needName(); if(!name||busy) return; busy=true; setErr(""); $("hostBtn").textContent="Making a room…";
+  try{ const j=await call("POST",{action:"create",pid:O.pid,name}); O.code=j.room.code; oSave(); goOnline(j); }
+  catch(e){ setErr(e.message); }
+  busy=false; $("hostBtn").textContent="Host a new game";
+};
+$("oCode").addEventListener("input",e=>{ e.target.value=e.target.value.toUpperCase().replace(/[^A-Z]/g,""); });
+$("joinBtn").onclick=async()=>{
+  const name=needName(); if(!name||busy) return;
+  const code=$("oCode").value.trim().toUpperCase();
+  if(code.length!==4){ setErr("Type the 4-letter code the host read out."); $("oCode").focus(); return; }
+  busy=true; setErr("");
+  try{ O.code=code; const j=await call("POST",{action:"join",pid:O.pid,code,name}); oSave(); goOnline(j); }
+  catch(e){ setErr(e.message); O.code=""; oSave(); }
+  busy=false;
+};
+$("toOffline").onclick=()=>{ $("onlinePane").classList.add("hidden"); $("offlinePane").classList.remove("hidden"); window.scrollTo(0,0); };
+$("toOnline").onclick=()=>{ $("offlinePane").classList.add("hidden"); $("onlinePane").classList.remove("hidden"); window.scrollTo(0,0); };
+
+function goOnline(j){
+  S.online=true; last={phase:"",round:-1,revealed:false,pkey:""};
+  apply(j);
+  clearInterval(poller); poller=setInterval(poll,1500);
+}
+async function poll(){
+  if(!S.online||!O.code) return;
+  try{ const j=await call("GET"); fails=0; $("net").classList.remove("on"); apply(j); }
+  catch(e){ if(e.status===404){ stopOnline(); dialog({title:"This game has ended",text:"The room expired or was closed. Host or join a new one.",buttons:[{label:"OK",cls:"btn-go"}]}); return; }
+    if(++fails>=2) $("net").classList.add("on"); }
+}
+function stopOnline(){
+  clearInterval(poller); poller=null; S.online=false; S.inGame=false; O.code=""; oSave();
+  const saved=store.get(); if(saved) Object.assign(S,saved,{inGame:false});
+  close(); $("game").classList.add("hidden"); $("lobby").classList.add("hidden"); $("setup").classList.remove("hidden");
+  $("offlinePane").classList.add("hidden"); $("onlinePane").classList.remove("hidden"); $("net").classList.remove("on"); paintSetup();
+}
+function leaveOnline(){
+  dialog({title:"Leave this game?",text:O.isHost?"You're the host. If you leave, nobody can start new rounds.":"You can rejoin with the same code.",buttons:[
+    {label:"Leave game",cls:"btn-hot",onClick:async()=>{ try{ await call("POST",{action:"leave",pid:O.pid,code:O.code}); }catch(e){} stopOnline(); }},{label:"Stay"}]});
+}
+$("lbLeave").onclick=leaveOnline;
+$("toLobbyBtn").onclick=()=>dialog({title:"Back to the lobby?",text:"Everyone goes back to the player list. New people can join, and you can change the category or timer.",buttons:[{label:"Go to lobby",cls:"btn-go",onClick:()=>api({action:"lobby"})},{label:"Cancel"}]});
+$("lbCat").onchange=()=>api({action:"settings",cat:$("lbCat").value});
+$("lbTimer").onchange=()=>api({action:"settings",timer:+$("lbTimer").value});
+$("lbStart").onclick=()=>api({action:"start"});
+
+function catLabel(k){ return k==="__thanks"?"Thanksgiving mix":k==="__random"?"A mix of everything":k; }
+function paintLobby(room,lobby){
+  $("lbCode").textContent=room.code;
+  const n=lobby.length;
+  $("lbCount").textContent = n===1 ? "1 player so far" : `${n} players so far`;
+  $("lbList").innerHTML = lobby.map((p,i)=>`<li><span class="num">${i+1}</span><span class="nm">${esc(p.name)}</span>${p.id===room.hostId?'<span class="badge">Host</span>':""}${p.id===O.pid?'<span class="me">You</span>':""}${O.isHost&&p.id!==room.hostId?`<button class="kick" type="button" data-k="${p.id}">Remove</button>`:""}</li>`).join("");
+  $("lbList").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ const who=lobby.find(p=>p.id===b.dataset.k); dialog({title:`Remove ${who.name}?`,text:"Use this if someone joined twice or left.",buttons:[{label:"Remove",cls:"btn-hot",onClick:()=>api({action:"kick",who:who.id})},{label:"Cancel"}]}); });
+  $("lbHost").classList.toggle("hidden",!O.isHost); $("lbWait").classList.toggle("hidden",O.isHost);
+  if(O.isHost){
+    if(document.activeElement!==$("lbCat")) $("lbCat").value=room.cat;
+    if(document.activeElement!==$("lbTimer")) $("lbTimer").value=String(room.timer);
+    $("lbStart").disabled = n<3; $("lbStart").style.opacity = n<3 ? .5 : 1;
+    $("lbHint").textContent = n<3 ? `Need at least 3 players (${3-n} more).` : "Start once everyone's on the list.";
+  } else {
+    $("lbWait").innerHTML = `<span class="dotty">Waiting for the host to start</span><br><span style="font-weight:500;opacity:.85">${esc(catLabel(room.cat))} · ${fmt(room.timer)} timer</span>`;
+  }
+}
+
+function apply(j){
+  const room=j.room, lobby=j.lobby||[];
+  O.isHost = room.hostId===O.pid;
+  const host = lobby.find(p=>p.id===room.hostId) || room.players.find(p=>p.id===room.hostId);
+  O.hostName = host ? host.name : "The host";
+  // removed by the host?
+  if(!lobby.find(p=>p.id===O.pid) && room.phase==="lobby"){ stopOnline(); dialog({title:"You were removed",text:"The host took you off the list. You can join again with the code.",buttons:[{label:"OK",cls:"btn-go"}]}); return; }
+
+  if(room.phase==="lobby"){
+    $("setup").classList.add("hidden"); $("game").classList.add("hidden"); $("lobby").classList.remove("hidden");
+    if(last.phase!=="lobby"){ close(); window.scrollTo(0,0); }
+    S.inGame=false; paintLobby(room,lobby); last.phase="lobby"; return;
+  }
+  // round phase
+  const seat = room.players.findIndex(p=>p.id===O.pid)+1;
+  $("setup").classList.add("hidden"); $("lobby").classList.add("hidden");
+  if(!seat){ // joined mid-round: wait
+    $("game").classList.add("hidden"); $("lobby").classList.remove("hidden"); paintLobby(room,lobby);
+    $("lbWait").classList.remove("hidden"); $("lbHost").classList.add("hidden");
+    $("lbWait").innerHTML='<span class="dotty">A round is going. You\'re in next round</span>'; last.phase="waiting"; return;
+  }
+  const pkey = room.players.map(p=>p.id).join(",");
+  S.code=room.code; S.players=room.players.length; S.cat=room.cat; S.round=room.round; S.seat=seat; S.timer=room.timer; S.inGame=true;
+  O.players=room.players;
+  S.tStart = room.tStart ? room.tStart - offset : 0; S.tEnd = room.tEnd ? room.tEnd - offset : 0;
+  if(last.phase!=="round" || last.round!==room.round || last.pkey!==pkey){
+    close(); lastShown = S.tStart ? "" : "idle"; enterGame(); last.revealed=false;
+  } else tick();
+  if(room.revealed && !last.revealed){
+    const ch = room.players[RD.cham-1];
+    dialog({title:"The chameleon was",
+      html:`<div class="reveal"><div class="p" style="font-size:44px">${esc(ch.name)}</div><div class="w">The word was<strong>${esc(RD.word)}</strong></div></div>`,
+      text:"If the chameleon was caught, they get one guess at the word to win the round anyway.",
+      buttons: O.isHost ? [{label:"Start next round",cls:"btn-go",onClick:nextRound},{label:"Close"}] : [{label:"Close",cls:"btn-go"}]});
+  }
+  last.phase="round"; last.round=room.round; last.pkey=pkey; last.revealed=room.revealed;
+}
+
 paintSetup();
-if(S.inGame && S.code) enterGame();
+if(O.code){ call("GET").then(j=>{ if(j.lobby.find(p=>p.id===O.pid)||j.room.players.find(p=>p.id===O.pid)) goOnline(j); else { O.code=""; oSave(); } }).catch(()=>{ O.code=""; oSave(); }); }
+else if(S.inGame && S.code){ $("onlinePane").classList.add("hidden"); $("offlinePane").classList.remove("hidden"); enterGame(); }
 })();
 </script>
 </body>
