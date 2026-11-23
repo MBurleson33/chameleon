@@ -457,8 +457,8 @@ function enterGame(){
   const isHost = S.online ? O.isHost : S.seat===1;
   $("youAre").textContent = S.online ? (isHost ? `${O.name} (host)` : O.name) : (S.seat===1 ? "You're player 1 (host)" : `You're player ${S.seat}`);
   if(S.online){
-    const P=O.players, f=RD.first-1, ord=P.slice(f).concat(P.slice(0,f));
-    document.querySelector(".first").innerHTML = `<div class="n">${RD.first}</div><div><b>${esc(P[f].name)} goes first</b><div class="order">${ord.map(p=>`<span>${esc(p.name)}</span>`).join("")}</div></div>`;
+    const P=O.players, f=RD.first-1;
+    document.querySelector(".first").innerHTML = `<div class="n" aria-hidden="true">🗣️</div><div><b>${esc(P[f].name)} goes first</b><span>Then go around the circle, one word each</span></div>`;
     document.querySelector("#hostNote b").textContent = `${O.hostName} is the host`;
     $("nextBtn").classList.toggle("hidden",!isHost); $("toLobbyBtn").classList.toggle("hidden",!isHost);
   } else { $("toLobbyBtn").classList.add("hidden"); $("nextBtn").classList.remove("hidden"); }
@@ -694,7 +694,7 @@ else if(S.inGame && S.code){ $("onlinePane").classList.add("hidden"); $("offline
 <h3>2. Check your card</h3>
 <ul><li>Press and hold your card so nobody else can see it.</li><li>Everyone sees the category, a grid of 16 words, and the secret word highlighted.</li><li>The chameleon sees the category and the grid, but not which word it is.</li></ul>
 <h3>3. Give clues</h3>
-<ul><li>Start with the player shown and go in the order on screen. Each person says <b>one word</b> related to the secret word.</li><li>Never say the secret word itself.</li><li>Too obvious, and the chameleon figures out the word. Too vague, and people think you're the chameleon.</li><li>The chameleon listens and bluffs a clue that fits in.</li></ul>
+<ul><li>Start with the person shown on screen, then go around your circle in whichever direction you like. Each person says <b>one word</b> related to the secret word.</li><li>Never say the secret word itself.</li><li>Too obvious, and the chameleon figures out the word. Too vague, and people think you're the chameleon.</li><li>The chameleon listens and bluffs a clue that fits in.</li></ul>
 <h3>4. Talk it over and point</h3>
 <ul><li>When the timer runs out (or everyone has given a clue), discuss who seemed off.</li><li>On three, everyone points at who they think the chameleon is. The person with the most fingers is accused.</li><li>Tie? Quick re-vote between just the tied players. Still tied, the host decides.</li></ul>
 <h3>5. Reveal and who wins</h3>
