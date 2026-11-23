@@ -429,7 +429,7 @@ function newCode(){ const L="ABCDEFGHJKLMNPQRSTUVWXYZ"; let c=""; for(let i=0;i<
 function paintSetup(){ $("code").value=S.code; $("players").textContent=S.players; $("seat").textContent=S.seat||"?"; $("seatField").classList.toggle("need",!S.seat); catSel.value=S.cat; $("timer").value=String(S.timer); }
 document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{
   const d=+b.dataset.d;
-  if(b.dataset.step==="players"){ S.players=Math.min(12,Math.max(3,S.players+d)); if(S.seat>S.players) S.seat=S.players; }
+  if(b.dataset.step==="players"){ S.players=Math.min(20,Math.max(3,S.players+d)); if(S.seat>S.players) S.seat=S.players; }
   else if(!S.seat) S.seat=1;
   else S.seat=Math.min(S.players,Math.max(1,S.seat+d));
   paintSetup(); save();

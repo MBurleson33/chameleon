@@ -113,7 +113,7 @@ module.exports = async (req, res) => {
     } else if (action === "start" || action === "next") {
       const players = freeze(st.lobby);
       if (players.length < 3) return send(400, { error: "You need at least 3 players." });
-      if (players.length > 12) return send(400, { error: "12 players max." });
+      if (players.length > 20) return send(400, { error: "20 players max." });
       room.players = players; room.phase = "round"; room.round = action === "start" ? 1 : room.round + 1;
       room.tStart = room.tEnd = 0; room.revealed = false;
     } else if (action === "timer") {
