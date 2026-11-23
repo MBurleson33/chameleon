@@ -295,7 +295,7 @@ body{padding-bottom:calc(env(safe-area-inset-bottom) + 84px)!important}
   <!-- LOBBY -->
   <section id="lobby" class="hidden">
     <div class="bar">
-      <div><div class="code" id="lbCode">ABCD</div><div class="meta">Room code</div></div>
+      <div><div class="code" id="lbCode">ABCD</div><div class="meta">Everyone joins with this code</div></div>
       <button class="btn btn-chip" id="lbLeave" type="button">Leave</button>
     </div>
     <div class="sheet" style="margin-bottom:16px">
@@ -580,7 +580,8 @@ function setErr(t){ $("oErr").textContent=t||""; }
 function needName(){ const n=$("oName").value.trim(); if(!n){ setErr("Add your name first."); $("oName").focus(); return null; } O.name=n; oSave(); return n; }
 
 $("hostBtn").onclick=async()=>{
-  const name=needName(); if(!name||busy) return; busy=true; setErr(""); $("hostBtn").textContent="Making a room…";
+  const name=needName(); if(!name||busy) return;
+  if($("oCode").value.trim()){ dialog({title:"Join or host?",text:`You typed the code ${$("oCode").value.trim()}. To get into that game, tap Join. Host makes a brand-new game with its own code.`,buttons:[{label:`Join ${$("oCode").value.trim()}`,cls:"btn-go",onClick:()=>$("joinBtn").click()},{label:"Host a new game instead",onClick:()=>{ $("oCode").value=""; $("hostBtn").click(); }}]}); return; } busy=true; setErr(""); $("hostBtn").textContent="Making a room…";
   try{ const j=await call("POST",{action:"create",pid:O.pid,name}); O.code=j.room.code; oSave(); goOnline(j); }
   catch(e){ setErr(e.message); }
   busy=false; $("hostBtn").textContent="Host a new game";
