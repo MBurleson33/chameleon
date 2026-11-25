@@ -115,6 +115,10 @@ select{width:100%;appearance:none;background:#fff;border:1px solid rgba(43,36,32
 .grid span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;padding:4px 3px;border-radius:8px;background:var(--gold-pale);font-size:12.5px;font-weight:500;line-height:1.15}
 .grid span.hit{background:var(--forest);color:#fbf6ec;font-weight:600}
 .role.cham .grid span{background:rgba(251,246,236,.14);color:#fbf6ec}
+.gridnote{margin:0 0 10px;padding-top:12px;border-top:1px solid var(--gold);font-size:14px;line-height:1.35;text-align:center;color:var(--muted)}
+.gridnote b{color:var(--ink);font-weight:600}
+.role.cham .gridnote{border-color:rgba(251,246,236,.4);color:rgba(251,246,236,.9)}
+.role.cham .gridnote b{color:#fbf6ec}
 
 .first,.hostNote{display:flex;align-items:center;gap:14px;margin-bottom:16px}
 .first .n,.hostNote .n{width:48px;height:48px;flex:none;border-radius:50%;border:1px solid var(--gold);background:var(--gold-pale);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;font-weight:600;color:var(--cran)}
@@ -223,7 +227,7 @@ select{width:100%;appearance:none;background:#fff;border:1px solid rgba(43,36,32
         <h2>How to play</h2>
         <ol>
           <li>One person taps Host and reads out the code. Everyone else joins with it.</li>
-          <li>Hold your card to see the secret word. The chameleon only sees the category.</li>
+          <li>Hold your card to see the secret word. Everyone, including the chameleon, also sees the 16 possible words. Everyone except the chameleon sees which one is highlighted.</li>
           <li>Starting with the player shown, everyone gives a one-word clue.</li>
           <li>When the host's timer runs out, point at the chameleon on three. The host reveals it on every phone. If the chameleon was caught, they get one guess at the word to win anyway.</li>
         </ol>
@@ -274,7 +278,7 @@ select{width:100%;appearance:none;background:#fff;border:1px solid rgba(43,36,32
       <h2>How to play</h2>
       <ol>
         <li>Whoever makes the code is player 1. Count off clockwise from there. Everyone enters the same code, player count and category.</li>
-        <li>Hold your card to see the secret word. The chameleon only sees the category.</li>
+        <li>Hold your card to see the secret word. Everyone, including the chameleon, also sees the 16 possible words. Everyone except the chameleon sees which one is highlighted.</li>
         <li>Starting with the player shown, everyone gives a one-word clue.</li>
         <li>Player 1 runs the timer. When time's up, everyone points at the chameleon on three, then player 1 reveals who it was. If they're caught, they get one guess at the word to win anyway.</li>
       </ol>
@@ -459,9 +463,12 @@ function enterGame(){
   const isCham = RD.cham===S.seat;
   $("role").classList.toggle("cham",isCham);
   const grid = `<div class="grid">${RD.words.map((w,i)=>`<span class="${!isCham&&i===RD.wi?'hit':''}">${w}</span>`).join("")}</div>`;
+  const note = isCham
+    ? `<p class="gridnote"><b>The secret word is one of these 16.</b> Everyone sees this same list. Listen to the clues to figure out which one it is.</p>`
+    : `<p class="gridnote"><b>Everyone sees these 16 words, including the chameleon.</b> Yours is highlighted. Give a clue that proves you know it without making it obvious.</p>`;
   $("face").innerHTML = isCham
-    ? `<div class="cat">${RD.catKey}</div><div class="word">You're the chameleon</div><p class="blend">You don't know the word. Give a clue that blends in.</p>${grid}`
-    : `<div class="cat">${RD.catKey}</div><div class="word">${RD.word}</div>${grid}`;
+    ? `<div class="cat">${RD.catKey}</div><div class="word">You're the chameleon</div><p class="blend">You don't know the word. Give a clue that blends in.</p>${note}${grid}`
+    : `<div class="cat">${RD.catKey}</div><div class="word">${RD.word}</div>${note}${grid}`;
   window.scrollTo(0,0); tick(); keepAwake();
 }
 function leaveGame(){ S.inGame=false; save(); $("game").classList.add("hidden"); $("setup").classList.remove("hidden"); paintSetup(); }
